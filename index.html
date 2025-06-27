@@ -14,6 +14,8 @@
       .p-4, .p-3 { padding: 0.85rem !important; }
       .rounded { border-radius: 0.6rem !important; }
       table, th, td { font-size: 14px !important; }
+      .overlay-panel { width: 98vw !important; min-width: 0; }
+      .wa-btn { padding: 0.38rem 1rem !important; font-size: 0.97rem; }
     }
     @media print {
       body, .bg-white { background: #fff !important; color:#222 !important;}
@@ -23,7 +25,6 @@
       #mainBody { color: #000 !important;}
       .no-print { display:none !important;}
     }
-    /* Overlay */
     .overlay-bg {
       background: rgba(0,0,0,.58);
       position: fixed; z-index: 1000;
@@ -82,6 +83,20 @@
     .wa-btn:hover { background: #1ebd5a; }
     .wa-icon { width: 1.2em; height: 1.2em; display:inline-block; vertical-align:middle;}
     .cursor-pointer { cursor: pointer; }
+    .copy-btn {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 0.3em 0.85em;
+      font-size: 0.93em;
+      border-radius: 0.4em;
+      color: #334155;
+      cursor: pointer;
+      margin-left: 0.2em;
+      transition: background .17s;
+    }
+    .copy-btn:hover { background: #e0e7ef;}
+    body.dark .copy-btn { background: #232329; color: #f1f5f9; border-color: #475569;}
+    .overflow-x-auto { overflow-x: auto; }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-700" id="mainBody">
@@ -98,6 +113,7 @@
     <button id="btnExportTxt" class="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700">Export TXT</button>
     <button id="btnExportJson" class="px-3 py-1 bg-sky-600 text-white rounded text-xs hover:bg-sky-700">Export JSON</button>
     <button id="btnClear" class="px-3 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700">Clear Jadwal</button>
+    <button id="btnCopyFormatTxt" class="px-3 py-1 bg-slate-100 border border-slate-300 rounded text-xs hover:bg-slate-200" title="Copy Format TXT">Copy Format TXT</button>
   </div>
   <!-- Tanggal Picker -->
   <div class="flex flex-col md:flex-row md:items-center gap-2 mb-3">
@@ -107,8 +123,8 @@
     <button id="btnNext" class="px-2 py-1 text-xs rounded bg-slate-100 hover:bg-slate-200 border border-slate-200 no-print">&gt;</button>
   </div>
   <!-- Preview Tabel -->
-  <div id="previewContainer" class="mb-3">
-    <table class="w-full border text-sm rounded overflow-hidden">
+  <div id="previewContainer" class="mb-3 overflow-x-auto">
+    <table class="w-full border text-sm rounded overflow-hidden min-w-[360px]">
       <thead>
         <tr class="bg-slate-200 dark:bg-slate-700">
           <th class="p-2 border">Tanggal</th>
@@ -159,10 +175,11 @@
         <li>Format: <b>Hari, Tanggal, Tim, Anggota1; Anggota2; ...</b></li>
         <li>Contoh:</li>
       </ul>
-      <pre>
-Rabu, 11 Juni 2025, Tim 1, Putra A.01; Hendra Ds. A.09; Ali B.15; Aqsa B.15 Tahap Dua
+      <pre id="exampleFormat">
+Rabu, 11 Juni 2025, Tim 1, Putra A.01; Hendra Ds. A.09; Ali B.15
 Kamis, 12 Juni 2025, Tim 2, Ridho A.02; Kamil A.06; Rudi Hartono B.16
       </pre>
+      <button id="copyFormatExample" class="copy-btn">Copy Format</button>
       <div class="mt-2 text-xs text-slate-500">Anggota dipisahkan titik koma ( ; )</div>
     </div>
   </div>
@@ -341,7 +358,6 @@ function showEditPanel(show, idx) {
 // Overlay Format
 document.getElementById('btnShowFormat').onclick = function() {
   document.getElementById('formatOverlay').style.display = '';
-  // Lock scroll
   document.body.style.overflow = 'hidden';
 };
 document.getElementById('btnCloseFormat').onclick = function() {
@@ -353,6 +369,18 @@ document.getElementById('formatOverlay').onclick = function(e){
     this.style.display='none';
     document.body.style.overflow = '';
   }
+};
+// Copy Format Example
+document.getElementById('copyFormatExample').onclick = function() {
+  const txt = document.getElementById('exampleFormat').innerText;
+  navigator.clipboard.writeText(txt);
+  showToast('Format TXT dicopy!');
+};
+// Copy Full Format TXT (dari data actual)
+document.getElementById('btnCopyFormatTxt').onclick = function() {
+  let lines = jadwalArr.map(j=>`${formatTanggalLong(j.date)}, ${j.team}, ${j.members.join('; ')}`);
+  navigator.clipboard.writeText(lines.join('\n'));
+  showToast('Seluruh jadwal dicopy sebagai format TXT!');
 };
 
 // Event Listeners
@@ -413,7 +441,6 @@ document.getElementById('inputFile').onchange=function(e){
       jadwalArr=parseJadwalTxt(ev.target.result);
     }
     saveJadwal(jadwalArr);
-    // Default ke tanggal hari ini jika ada, jika tidak ke jadwal pertama
     let today = (new Date()).toISOString().slice(0,10);
     if(findByTanggal(today)!==-1) currentTanggal = today;
     else if(jadwalArr.length) currentTanggal = jadwalArr[0].date;
@@ -441,7 +468,6 @@ document.getElementById('btnClear').onclick=function(){
 
 // INIT: load, set tanggal ke hari ini
 window.onload = function() {
-  // Set dark mode: auto
   if(window.matchMedia('(prefers-color-scheme: dark)').matches) {
     document.body.classList.add('dark');
   }
