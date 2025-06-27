@@ -2,223 +2,124 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>Ronda Malam Scheduler</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <meta name="color-scheme" content="dark light">
   <style>
     html { color-scheme: light dark; }
     body { transition: background 0.2s, color 0.2s; }
-    @media (max-width:600px) {
-      .max-w-2xl { max-width: 100vw !important; }
-      .p-4, .p-3 { padding: 0.75rem !important; }
-      .rounded { border-radius: 0.6rem !important; }
-      table, th, td { font-size: 14px !important; }
-      .box { border-radius: 0.8rem !important; }
-      .section { padding: 0.8rem 0.7rem !important; }
-    }
     @media print {
-      body, .bg-white { background: #fff !important; color:#222 !important;}
-      .shadow, .rounded, .bg-slate-50, .bg-slate-100, .bg-slate-200 { box-shadow:none !important; border-radius:0 !important; background: #fff !important;}
-      .max-w-2xl { max-width: 100vw !important; }
-      pre, textarea { background: #fff !important; color: #000 !important;}
-      #mainBody { color: #000 !important;}
-      .no-print { display:none !important;}
-    }
-    .overlay-bg {
-      background: rgba(0,0,0,.58);
-      position: fixed; z-index: 1000;
-      left:0; top:0; width:100vw; height:100vh;
-      display: flex; align-items: center; justify-content: center;
-      transition: opacity .25s;
-    }
-    .overlay-panel {
-      background: #fff;
-      max-width: 95vw;
-      width: 370px;
-      border-radius: 1rem;
-      padding: 1.3rem 1rem 1.1rem 1rem;
-      box-shadow: 0 4px 32px #0002;
-      color: #334155;
-      position: relative;
-      font-size: 15px;
-    }
-    body.dark .overlay-panel { background: #232329; color: #f1f5f9;}
-    .overlay-panel pre {
-      background: #f1f5f9;
-      color: #475569;
-      font-size: 13px;
-      border-radius: .5em;
-      margin-top: 12px;
-      padding: 0.9em 1em;
-      line-height: 1.55;
-      white-space: pre-wrap;
-    }
-    .overlay-panel .close-btn {
-      position: absolute;
-      right: 1rem;
-      top: 1rem;
-      font-size: 1.1em;
-      color: #94a3b8;
-      background: none;
-      border: none;
-      cursor: pointer;
-      transition: color .13s;
-    }
-    .overlay-panel .close-btn:active, .overlay-panel .close-btn:focus, .overlay-panel .close-btn:hover {
-      color: #2563eb;
-    }
-    .copy-btn {
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      padding: 0.3em 0.85em;
-      font-size: 0.93em;
-      border-radius: 0.4em;
-      color: #334155;
-      cursor: pointer;
-      margin-left: 0.2em;
-      transition: background .17s;
-    }
-    .copy-btn:hover { background: #e0e7ef;}
-    body.dark .copy-btn { background: #232329; color: #f1f5f9; border-color: #475569;}
-    .overflow-x-auto { overflow-x: auto; }
-    .box {
-      background: #f6ffe9;
-      border-radius: 1.1rem;
-      padding: 1.1em 0.9em;
-      margin-bottom: 1.1rem;
-      border: 1px solid #d3fbc2;
-    }
-    .section {
-      padding: 1rem 1rem;
-      margin-bottom: 0.8rem;
-      border-radius: 0.7em;
-      background: #f8fafc;
-    }
-    .judul {
-      font-weight: 700;
-      font-size: 1.13em;
-      margin-bottom: 0.5em;
-      text-align: center;
-      color: #2e7d32;
-      letter-spacing: .02em;
-    }
-    .wa-preview {
-      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
-      font-size: 1em;
-      background: #e9ffe8;
-      color: #184d1c;
-      border-radius: 0.8em;
-      padding: 0.95em 0.9em;
-      overflow-x: auto;
-      box-shadow: 0 1px 4px #0001;
-      line-height: 1.65;
-      word-break: break-word;
-      margin-bottom: 0.2em;
-      margin-top: 1em;
-    }
-    .wa-preview strong { font-weight: bold; color:#1a7816;}
-    .wa-preview em { font-style: italic; }
-    .wa-preview ul, .wa-preview li { margin-bottom: 0; }
-    .wa-preview .next-dates {margin-bottom:0.3em;}
-    .wa-preview .thanks { margin-top: 0.5em; }
-    .wa-preview .closing { font-weight: bold; color: #2563eb; margin-top: 0.6em;}
-    .wa-preview .icon { font-size:1.2em; vertical-align:middle;}
-    /* Mobile scroll for box */
-    @media (max-width:520px) {
-      .wa-preview { font-size: 0.97em; padding: 0.85em 0.5em;}
-      .box { padding: 0.7em 0.4em;}
-      .section { padding: 0.6em 0.5em;}
+      /* Consider using more specific selectors instead of !important */
+      body, .bg-white { background: #fff !important; color:#222 !important; }
+      .shadow, .rounded, .bg-slate-50, .bg-slate-100, .bg-slate-200 { box-shadow:none; border-radius:0; background: #fff; }
+      .max-w-2xl { max-width: 100vw; }
+      pre, textarea { background: #fff; color: #000; }
+      #mainBody { color: #000; }
+      .no-print { display:none; }
     }
   </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-700" id="mainBody">
+<body class="bg-slate-50 min-h-screen text-slate-700 px-4 sm:px-6 md:px-8" id="mainBody">
 
-<div class="max-w-2xl mx-auto mt-2 p-2 md:p-4 bg-white rounded shadow">
-  <div class="flex items-center justify-between mb-2">
-    <h1 class="text-lg md:text-xl font-bold text-center flex-1">Ronda Malam Scheduler</h1>
-    <button id="btnShowFormat" class="no-print px-2 py-1 text-xs bg-slate-200 rounded ml-2">Format TXT</button>
+<div class="max-w-2xl mx-auto mt-4 bg-white rounded shadow p-4">
+  <!-- Reusable utility classes should be extracted to avoid repetition -->
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="text-lg md:text-xl font-bold">Ronda Malam Scheduler</h1>
+    <button id="btnShowFormat" class="no-print px-2 py-1 text-xs bg-slate-200 rounded">Format TXT</button>
   </div>
-  <!-- Import / Export -->
-  <div class="flex flex-wrap gap-2 mb-3 no-print justify-center">
+
+  <!-- Import / Export Buttons -->
+  <div class="flex flex-wrap gap-2 mb-4 no-print justify-center">
     <input type="file" id="inputFile" accept=".txt,.json" class="hidden" />
-    <button id="btnImport" class="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">Import TXT</button>
-    <button id="btnExportTxt" class="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700">Export TXT</button>
-    <button id="btnExportJson" class="px-3 py-1 bg-sky-600 text-white rounded text-xs hover:bg-sky-700">Export JSON</button>
-    <button id="btnClear" class="px-3 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700">Clear Jadwal</button>
-    <button id="btnCopyFormatTxt" class="px-3 py-1 bg-slate-100 border border-slate-300 rounded text-xs hover:bg-slate-200" title="Copy Format TXT">Copy Format TXT</button>
+    <!-- Consider looping through button configs in JS to dynamically generate these -->
+    <button id="btnImport" class="btn-action">Import TXT</button>
+    <button id="btnExportTxt" class="btn-action btn-green">Export TXT</button>
+    <button id="btnExportJson" class="btn-action btn-sky">Export JSON</button>
+    <button id="btnClear" class="btn-action btn-red">Clear Jadwal</button>
+    <button id="btnCopyFormatTxt" class="btn-action" title="Copy Format TXT">Copy Format TXT</button>
   </div>
-  <!-- Tanggal Picker -->
-  <div class="flex flex-col md:flex-row md:items-center gap-2 mb-3">
-    <label class="font-semibold flex-shrink-0 min-w-[110px]">Pilih Tanggal:</label>
-    <input type="date" id="datePicker" class="border rounded p-1 text-sm flex-1 max-w-xs" />
-    <button id="btnPrev" class="px-2 py-1 text-xs rounded bg-slate-100 hover:bg-slate-200 border border-slate-200 no-print">&lt;</button>
-    <button id="btnNext" class="px-2 py-1 text-xs rounded bg-slate-100 hover:bg-slate-200 border border-slate-200 no-print">&gt;</button>
+
+  <!-- Date Picker -->
+  <div class="flex flex-col sm:flex-row sm:items-center gap-2 mb-4">
+    <label class="font-semibold flex-shrink-0">Pilih Tanggal:</label>
+    <input type="date" id="datePicker" class="border rounded p-1 text-sm" />
+    <button id="btnPrev" class="nav-btn">&lt;</button>
+    <button id="btnNext" class="nav-btn">&gt;</button>
   </div>
-  <!-- Preview Tabel -->
-  <div id="previewContainer" class="mb-3 overflow-x-auto">
-    <table class="w-full border text-sm rounded overflow-hidden min-w-[360px]">
-      <thead>
-        <tr class="bg-slate-200 dark:bg-slate-700">
-          <th class="p-2 border">Tanggal</th>
-          <th class="p-2 border">Tim</th>
-          <th class="p-2 border">Anggota</th>
-        </tr>
-      </thead>
-      <tbody id="previewTableBody"></tbody>
-    </table>
+
+  <!-- Preview: Table for desktop, Cards for mobile -->
+  <div id="previewContainer" class="mb-4">
+    <!-- Desktop Table -->
+    <div class="hidden sm:block overflow-x-auto">
+      <table class="w-full border text-sm rounded overflow-hidden min-w-[360px]">
+        <thead>
+          <tr class="bg-slate-200 dark:bg-slate-700">
+            <th class="p-2 border">Tanggal</th>
+            <th class="p-2 border">Tim</th>
+            <th class="p-2 border">Anggota</th>
+          </tr>
+        </thead>
+        <tbody id="previewTableBody"></tbody>
+      </table>
+    </div>
+    <!-- Mobile Card List -->
+    <div class="space-y-3 sm:hidden">
+      <template id="cardTemplate">
+        <div class="p-4 bg-white rounded shadow dark:bg-gray-800">
+          <div class="flex justify-between mb-2">
+            <span class="font-semibold text-base text-slate-700 dark:text-slate-200" data-label="Tim"></span>
+            <span class="text-xs text-gray-500 dark:text-gray-400" data-label="Tanggal"></span>
+          </div>
+          <div class="flex flex-wrap gap-1 break-words" data-label="Members"></div> <!-- Fixed malformed closing tag -->
+        </div>
+      </template>
+      <div id="cardContainer"></div>
+    </div>
     <div id="notFound" class="text-center text-slate-400 p-3"></div>
   </div>
-  <!-- Edit -->
-  <div id="editRowPanel" class="mb-3 hidden">
-    <div class="bg-slate-100 rounded p-2 mb-2">
+
+  <!-- Edit Panel -->
+  <div id="editRowPanel" class="mb-4 hidden">
+    <div class="bg-slate-100 rounded p-3 mb-2">
       <div class="mb-2 font-semibold">Edit Jadwal</div>
-      <form id="editForm" class="flex flex-col gap-1">
+      <form id="editForm" class="flex flex-col gap-2">
         <label>Tanggal: <input type="date" id="editTanggal" class="border rounded p-1 text-sm" required></label>
         <label>Tim: <input type="text" id="editTeam" class="border rounded p-1 text-sm" required></label>
         <label>Anggota: <input type="text" id="editAnggota" class="border rounded p-1 text-sm" required></label>
         <div class="flex gap-2 mt-2">
-          <button class="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700" type="submit">Simpan</button>
-          <button id="btnCancelEdit" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300" type="button">Batal</button>
+          <button class="btn-action btn-blue" type="submit">Simpan</button>
+          <button id="btnCancelEdit" class="btn-action" type="button">Batal</button>
         </div>
       </form>
     </div>
   </div>
-  <!-- WhatsApp Output -->
-  <div class="bg-slate-50 section wa-preview">
-    <div id="waOutput"></div>
-    <div class="flex gap-2 mt-3 no-print">
-      <button id="btnCopyWA" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300">Copy Teks Jadwal</button>
-      <button id="btnEditRow" class="px-3 py-1 bg-yellow-100 border border-yellow-400 text-yellow-900 rounded text-xs hover:bg-yellow-200">Edit Baris</button>
-      <button id="btnPrint" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300">Print</button>
+
+  <!-- WhatsApp & Copy -->
+  <div class="mt-2 mb-2 bg-slate-100 rounded p-3">
+    <div class="flex flex-wrap gap-2 mb-2 items-center">
+      <button id="btnShareWA" class="wa-btn no-print">…</button>
+      <button id="btnCopyWA" class="btn-action" title="Copy Text">Copy Text</button>
+      <!-- Consider grouping edit/print/copy actions into a toolbar component -->
+      <button id="btnEditRow" class="btn-action">Edit Baris</button>
+      <button id="btnPrint" class="btn-action">Print</button>
     </div>
+    <pre id="waOutput" class="whitespace-pre-wrap text-slate-700 text-sm bg-transparent"></pre>
   </div>
 </div>
 
-<!-- Overlay Format -->
-<div id="formatOverlay" class="overlay-bg" style="display:none;">
-  <div class="overlay-panel">
-    <button class="close-btn" id="btnCloseFormat" title="Tutup">&times;</button>
-    <div class="font-semibold text-base mb-2 text-center">Format File TXT Jadwal Ronda</div>
-    <div>
-      <ul class="mb-3 pl-4 text-sm list-disc">
-        <li>Setiap baris <b>= 1 jadwal</b> (1 hari, 1 tim)</li>
-        <li>Pemisah antar item: <b>koma ( , )</b></li>
-        <li>Format: <b>Hari, Tanggal, Tim, Anggota1; Anggota2; ...</b></li>
-        <li>Contoh:</li>
-      </ul>
-      <pre id="exampleFormat">
-Rabu, 11 Juni 2025, Tim 1, Putra A.01; Hendra Ds. A.09; Ali B.15
-Kamis, 12 Juni 2025, Tim 2, Ridho A.02; Kamil A.06; Rudi Hartono B.16
-      </pre>
-      <button id="copyFormatExample" class="copy-btn">Copy Format</button>
-      <div class="mt-2 text-xs text-slate-500">Anggota dipisahkan titik koma ( ; )</div>
-    </div>
-  </div>
+<!-- Fixed Bottom Bar for Mobile -->
+<div class="fixed bottom-0 left-0 w-full sm:hidden bg-white border-t p-2 flex justify-around shadow-md z-50 no-print">
+  <button id="btnShareWAFixed" class="wa-btn flex-1 mx-1 justify-center">…</button>
+  <button id="btnCopyWAFixed" class="btn-action flex-1 mx-1 justify-center" title="Copy Text">Copy</button>
 </div>
 
-<!-- Toast Notification -->
-<div id="toast" class="fixed left-1/2 bottom-7 px-4 py-2 rounded shadow text-white bg-slate-800 text-sm z-50 transition-all" style="display:none;transform:translateX(-50%);"></div>
+<!-- Add <noscript> fallback message for users with JS disabled -->
+<noscript>
+  <div class="fixed inset-0 bg-white p-4 text-center">
+    <p>JavaScript diperlukan agar aplikasi ini berfungsi dengan baik. Silakan aktifkan JavaScript.</p>
+  </div>
+</noscript>
 
 <script>
 let jadwalArr = [];
@@ -315,42 +216,12 @@ function renderPreview() {
   tbody.appendChild(tr);
 }
 
-// WhatsApp Output (stylized, not using share)
+// WhatsApp Output
 function randomKalimatPenutup() {
   let idx = Math.floor(Math.random()*randomKata2.length);
   return randomKata2[idx];
 }
-function generateWAOutputHTML() {
-  let idx = findByTanggal(currentTanggal);
-  if(idx===-1) return '<span class="block text-slate-400">Tidak ada jadwal untuk tanggal ini.</span>';
-  const settings = {
-    title: "RONDA MALAM KAISAR RESIDENCE",
-    jam: "23.00–04.00 WIB",
-    tz: "WIB"
-  };
-  let j = jadwalArr[idx];
-  // Cari jadwal selanjutnya tim yang sama
-  let selanjutnya = jadwalArr.filter(row => row.team === j.team && row.date > j.date)
-    .map(row=>`<li>${formatTanggalLong(row.date)}</li>`).join('') || '<li>-</li>';
-  return `
-<div class="judul">🔷🔷 <span>${settings.title}</span> 🔷🔷</div>
-<div class="mb-2"><span class="icon">📅</span> <strong>${formatTanggalLong(j.date)}</strong><br>
-<span class="icon">⏰</span> <strong>Waktu Jaga:</strong> ${settings.jam}</div>
-<div><span class="icon">👥</span> <strong>${j.team}</strong></div>
-<div><span class="icon">🧑‍✈️</span> <strong>Petugas:</strong>
-  <ul class="ml-4 mt-1 mb-2">
-   ${j.members.map(m=>`<li>${m}</li>`).join('')}
-  </ul>
-</div>
-<div class="next-dates mb-2"><span class="icon">📌</span> <strong>Jadwal Selanjutnya ${j.team}:</strong>
-  <ul class="ml-4 mt-1">${selanjutnya}</ul>
-</div>
-<div class="thanks">🙏 Terima kasih atas partisipasinya.<br>
-Mari jaga lingkungan tetap aman dan nyaman bersama-sama.</div>
-<div class="closing mt-1">🔷 <b>${randomKalimatPenutup()}</b> 🔷</div>
-`;
-}
-function generateWAOutputTxt() {
+function generateWAOutput() {
   let idx = findByTanggal(currentTanggal);
   if(idx===-1) return 'Tidak ada jadwal untuk tanggal ini.';
   const settings = {
@@ -359,64 +230,63 @@ function generateWAOutputTxt() {
     tz: "WIB"
   };
   let j = jadwalArr[idx];
+  // Cari jadwal selanjutnya tim yang sama
   let selanjutnya = jadwalArr.filter(row => row.team === j.team && row.date > j.date)
-    .map(row=>`- ${formatTanggalLong(row.date)}`).join('\n') || '-';
+    .map(row=>`• ${formatTanggalLong(row.date)}`).join('\n') || '• -';
   return (
-`🔷🔷 ${settings.title} 🔷🔷
+`🔥🚨 *${settings.title}* 🚨🔥
 
-📅 ${formatTanggalLong(j.date)}
-⏰ Waktu Jaga: ${settings.jam}
+📆 *${formatTanggalLong(j.date)}*  
+⏰ *Waktu Jaga:* ${settings.jam}  
 
-👥 ${j.team}
-🧑‍✈️ Petugas:
-${j.members.map(m=>`- ${m}`).join('\n')}
+👥 *${j.team}*  
+👮‍♂️ *Petugas:*  
+${j.members.map(m=>`• ${m}`).join('\n')}
 
-📌 Jadwal Selanjutnya ${j.team}:
+📌 *Jadwal Selanjutnya ${j.team}:*  
 ${selanjutnya}
 
-🙏 Terima kasih atas partisipasinya.
-Mari jaga lingkungan tetap aman dan nyaman bersama-sama.
+🙏 Terima kasih atas partisipasinya.  
+Mari jaga lingkungan tetap aman dan nyaman bersama-sama.  
 
-🔷 ${randomKalimatPenutup()} 🔷
+💥 *${randomKalimatPenutup()}* 💥
 `
   );
 }
 function renderWAOutput() {
-  document.getElementById('waOutput').innerHTML = generateWAOutputHTML();
+  document.getElementById('waOutput').textContent = generateWAOutput();
 }
-// Copy WA Output
-document.getElementById('btnCopyWA').onclick = function() {
-  let txt = generateWAOutputTxt();
-  navigator.clipboard.writeText(txt);
-  showToast('Teks jadwal dicopy!');
-};
-// Print
-document.getElementById('btnPrint').onclick = function(){ window.print(); };
 
-// Edit
-document.getElementById('btnEditRow').onclick = function() {
+// Tanggal picker: set ke earliest/latest jika < atau >
+function setTanggalNext(dir) {
+  if(!jadwalArr.length) return;
   let idx = findByTanggal(currentTanggal);
-  if(idx===-1) { showToast('Tidak ada jadwal untuk diedit!'); return; }
-  showEditPanel(true, idx);
-};
-document.getElementById('btnCancelEdit').onclick = function() {
-  showEditPanel(false);
-};
-document.getElementById('editForm').onsubmit = function(e){
-  e.preventDefault();
-  if(editIdx===null) return;
-  let tgl = document.getElementById('editTanggal').value;
-  let tim = document.getElementById('editTeam').value;
-  let anggota = document.getElementById('editAnggota').value;
-  if(!tgl||!tim||!anggota) { showToast('Lengkapi semua input!'); return;}
-  jadwalArr[editIdx] = { date: tgl, team: tim, members: anggota.split(';').map(m=>m.trim()).filter(Boolean) };
-  saveJadwal(jadwalArr);
-  currentTanggal = tgl;
+  if(idx===-1) {
+    currentTanggal = jadwalArr[0].date;
+  } else {
+    let nextIdx = idx+dir;
+    if(nextIdx >=0 && nextIdx < jadwalArr.length) {
+      currentTanggal = jadwalArr[nextIdx].date;
+    }
+  }
   document.getElementById('datePicker').value = currentTanggal;
-  showEditPanel(false);
   renderPreview(); renderWAOutput();
-  showToast('Jadwal disimpan!');
-};
+}
+
+// Edit Panel
+function showEditPanel(show, idx) {
+  const panel = document.getElementById('editRowPanel');
+  panel.classList.toggle('hidden', !show);
+  if(show) {
+    editIdx = idx;
+    let j = jadwalArr[idx];
+    document.getElementById('editTanggal').value = j.date;
+    document.getElementById('editTeam').value = j.team;
+    document.getElementById('editAnggota').value = j.members.join('; ');
+  } else {
+    editIdx = null;
+  }
+}
 
 // Overlay Format
 document.getElementById('btnShowFormat').onclick = function() {
@@ -446,28 +316,51 @@ document.getElementById('btnCopyFormatTxt').onclick = function() {
   showToast('Seluruh jadwal dicopy sebagai format TXT!');
 };
 
-// Tanggal picker: set ke earliest/latest jika < atau >
-function setTanggalNext(dir) {
-  if(!jadwalArr.length) return;
-  let idx = findByTanggal(currentTanggal);
-  if(idx===-1) {
-    currentTanggal = jadwalArr[0].date;
-  } else {
-    let nextIdx = idx+dir;
-    if(nextIdx >=0 && nextIdx < jadwalArr.length) {
-      currentTanggal = jadwalArr[nextIdx].date;
-    }
-  }
-  document.getElementById('datePicker').value = currentTanggal;
-  renderPreview(); renderWAOutput();
-}
-
+// Event Listeners
 document.getElementById('datePicker').onchange = function() {
   currentTanggal = this.value;
   renderPreview(); renderWAOutput();
 };
 document.getElementById('btnPrev').onclick = function() { setTanggalNext(-1); };
 document.getElementById('btnNext').onclick = function() { setTanggalNext(1); };
+
+// WhatsApp
+document.getElementById('btnShareWA').onclick = function() {
+  let waText = generateWAOutput();
+  if(waText.startsWith('Tidak ada')) { showToast('Tidak ada jadwal hari ini.'); return; }
+  window.open('https://wa.me/?text='+encodeURIComponent(waText), '_blank');
+};
+document.getElementById('btnCopyWA').onclick = function() {
+  let waText = generateWAOutput();
+  navigator.clipboard.writeText(waText);
+  showToast('Teks disalin!');
+};
+document.getElementById('btnPrint').onclick = function(){ window.print(); };
+
+// Edit
+document.getElementById('btnEditRow').onclick = function() {
+  let idx = findByTanggal(currentTanggal);
+  if(idx===-1) { showToast('Tidak ada jadwal untuk diedit!'); return; }
+  showEditPanel(true, idx);
+};
+document.getElementById('btnCancelEdit').onclick = function() {
+  showEditPanel(false);
+};
+document.getElementById('editForm').onsubmit = function(e){
+  e.preventDefault();
+  if(editIdx===null) return;
+  let tgl = document.getElementById('editTanggal').value;
+  let tim = document.getElementById('editTeam').value;
+  let anggota = document.getElementById('editAnggota').value;
+  if(!tgl||!tim||!anggota) { showToast('Lengkapi semua input!'); return;}
+  jadwalArr[editIdx] = { date: tgl, team: tim, members: anggota.split(';').map(m=>m.trim()).filter(Boolean) };
+  saveJadwal(jadwalArr);
+  currentTanggal = tgl;
+  document.getElementById('datePicker').value = currentTanggal;
+  showEditPanel(false);
+  renderPreview(); renderWAOutput();
+  showToast('Jadwal disimpan!');
+};
 
 // Import/Export
 document.getElementById('btnImport').onclick=()=>document.getElementById('inputFile').click();
@@ -519,6 +412,7 @@ window.onload = function() {
   document.getElementById('datePicker').value = currentTanggal;
   renderPreview(); renderWAOutput();
 };
+
 </script>
 </body>
 </html>
