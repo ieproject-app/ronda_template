@@ -167,6 +167,28 @@
     @media (min-width:601px) {
       .wa-btn-group { display: flex !important;}
     }
+    /* Edit anggota textarea styling */
+    .edit-anggota-textarea {
+      min-height: 90px;
+      resize: vertical;
+      font-family: inherit;
+      font-size: 0.97em;
+      padding: .6em .8em !important;
+      width: 100%;
+      border-radius: .4em;
+      background: #fff;
+    }
+    body.dark .edit-anggota-textarea {
+      background: #232329;
+      color: #f1f5f9;
+      border-color: #475569;
+    }
+    .edit-anggota-label {
+      font-size: 0.97em;
+      font-weight: 500;
+      margin-bottom: 0.2em;
+      display: block;
+    }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-700" id="mainBody">
@@ -215,7 +237,8 @@
       <form id="editForm" class="flex flex-col gap-1">
         <label>Tanggal: <input type="date" id="editTanggal" class="border rounded p-1 text-sm" required></label>
         <label>Tim: <input type="text" id="editTeam" class="border rounded p-1 text-sm" required></label>
-        <label>Anggota: <input type="text" id="editAnggota" class="border rounded p-1 text-sm" required></label>
+        <label class="edit-anggota-label" for="editAnggota">Anggota:</label>
+        <textarea id="editAnggota" class="edit-anggota-textarea border text-sm" required></textarea>
         <div class="flex gap-2 mt-2">
           <button class="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700" type="submit">Simpan</button>
           <button id="btnCancelEdit" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300" type="button">Batal</button>
@@ -466,7 +489,19 @@ function showEditPanel(show, idx) {
     let j = jadwalArr[idx];
     document.getElementById('editTanggal').value = j.date;
     document.getElementById('editTeam').value = j.team;
-    document.getElementById('editAnggota').value = j.members.join('; ');
+    // Show anggota as 1 per line for easier editing
+    const anggota = j.members.join('\n');
+    const ta = document.getElementById('editAnggota');
+    ta.value = anggota;
+    // Auto resize textarea to fit content
+    setTimeout(()=>{
+      ta.style.height = "auto";
+      ta.style.height = (ta.scrollHeight+4) + "px";
+    },1);
+    ta.oninput = function() {
+      this.style.height = "auto";
+      this.style.height = (this.scrollHeight+4) + "px";
+    };
   } else {
     editIdx = null;
   }
@@ -559,9 +594,11 @@ document.getElementById('editForm').onsubmit = function(e){
   if(editIdx===null) return;
   let tgl = document.getElementById('editTanggal').value;
   let tim = document.getElementById('editTeam').value;
-  let anggota = document.getElementById('editAnggota').value;
-  if(!tgl||!tim||!anggota) { showToast('Lengkapi semua input!'); return;}
-  jadwalArr[editIdx] = { date: tgl, team: tim, members: anggota.split(';').map(m=>m.trim()).filter(Boolean) };
+  // Ambil anggota dari textarea, tiap baris = 1 anggota, kosong diabaikan
+  let anggota = document.getElementById('editAnggota').value
+    .split('\n').map(m=>m.trim()).filter(Boolean);
+  if(!tgl||!tim||!anggota.length) { showToast('Lengkapi semua input!'); return;}
+  jadwalArr[editIdx] = { date: tgl, team: tim, members: anggota };
   saveJadwal(jadwalArr);
   currentTanggal = tgl;
   document.getElementById('datePicker').value = currentTanggal;
