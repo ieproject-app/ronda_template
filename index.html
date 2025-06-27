@@ -14,16 +14,33 @@
       .p-4, .p-3 { padding: 0.85rem !important; }
       .rounded { border-radius: 0.6rem !important; }
       table, th, td { font-size: 14px !important; }
-      .overlay-panel { width: 98vw !important; min-width: 0; }
-      .wa-btn { padding: 0.38rem 1rem !important; font-size: 0.97rem; }
+      .wa-action-bar { 
+        position: fixed; 
+        left: 0; right: 0; 
+        bottom: 0; 
+        z-index: 1100;
+        background: #fff;
+        border-top: 1px solid #e5e7eb;
+        box-shadow: 0 -1px 10px #0002;
+        display: flex;
+        gap: 0.8em;
+        padding: 0.7em 0.8em;
+        justify-content: space-evenly;
+        align-items: center;
+        transition: transform 0.2s;
+      }
+      body.dark .wa-action-bar { background: #232329; border-top-color: #334155;}
+      .wa-action-bar .wa-btn { flex:1; min-width:0; }
+      .wa-action-bar .wa-btn, .wa-action-bar .wa-btn-secondary { font-size: 1rem; padding: 0.5em 0.7em;}
+      .wa-action-bar .wa-btn-secondary { background: #f1f5f9; color: #334155;}
+      .wa-action-bar .wa-btn-secondary:hover { background:#e0e7ef;}
+      .wa-action-bar .wa-btn { margin-bottom:0;}
+    }
+    @media (min-width:601px) {
+      .wa-action-bar { display:none !important;}
     }
     @media print {
-      body, .bg-white { background: #fff !important; color:#222 !important;}
-      .shadow, .rounded, .bg-slate-50, .bg-slate-100, .bg-slate-200 { box-shadow:none !important; border-radius:0 !important; background: #fff !important;}
-      .max-w-2xl { max-width: 100vw !important; }
-      pre, textarea { background: #fff !important; color: #000 !important;}
-      #mainBody { color: #000 !important;}
-      .no-print { display:none !important;}
+      .wa-action-bar, .no-print { display:none !important;}
     }
     .overlay-bg {
       background: rgba(0,0,0,.58);
@@ -86,10 +103,11 @@
       transition: background 0.2s;
       box-shadow: 0 1px 7px #0001;
       outline: none;
+      margin-bottom: 0.3em;
+      justify-content: center;
     }
     .wa-btn:hover { background: #1ebd5a; }
     .wa-icon { width: 1.2em; height: 1.2em; display:inline-block; vertical-align:middle;}
-    .cursor-pointer { cursor: pointer; }
     .copy-btn {
       background: #f1f5f9;
       border: 1px solid #cbd5e1;
@@ -104,7 +122,6 @@
     .copy-btn:hover { background: #e0e7ef;}
     body.dark .copy-btn { background: #232329; color: #f1f5f9; border-color: #475569;}
     .overflow-x-auto { overflow-x: auto; }
-    /* Tutorial step styling */
     .tutorial-step {
       margin-bottom: 1.15em;
       padding-left: 0.4em;
@@ -116,7 +133,6 @@
     }
     body.dark .tutorial-step { background: #232329; }
     .tutorial-list li { margin-bottom: 0.55em;}
-    /* WhatsApp preview box style */
     .wa-preview {
       background: #f7fdf9;
       color: #2d4736;
@@ -138,6 +154,19 @@
       border-color: #25D366;
     }
     .wa-btn:focus, .wa-btn:active { outline: 2px solid #2563eb44;}
+    /* Desktop WA button group */
+    .wa-btn-group {
+      display: flex;
+      gap: 0.7em;
+      justify-content: flex-end;
+      margin-bottom: 0.4em;
+    }
+    @media (max-width:600px) {
+      .wa-btn-group { display: none !important;}
+    }
+    @media (min-width:601px) {
+      .wa-btn-group { display: flex !important;}
+    }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-700" id="mainBody">
@@ -146,7 +175,6 @@
   <div class="flex items-center justify-between mb-2">
     <h1 class="text-lg md:text-xl font-bold text-center flex-1">Ronda Malam Scheduler</h1>
     <div class="flex gap-2">
-      <button id="btnShowFormat" class="no-print px-2 py-1 text-xs bg-slate-200 rounded ml-2">Format TXT</button>
       <button id="btnShowTutorial" class="no-print px-2 py-1 text-xs bg-blue-200 rounded ml-1">Tutorial</button>
     </div>
   </div>
@@ -197,38 +225,16 @@
   </div>
   <!-- WhatsApp Output -->
   <div class="mt-2 mb-2 bg-slate-100 rounded p-3">
-    <div class="flex flex-wrap gap-2 mb-2 items-center">
-      <button id="btnShareWA" class="wa-btn no-print" title="Bagikan ke WhatsApp">
+    <div class="wa-btn-group no-print" id="waBtnDesktop" style="display:none;">
+      <button id="btnShareWA" class="wa-btn" style="min-width:150px;">
         <svg viewBox="0 0 32 32" fill="none" class="wa-icon"><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M16 6.3c-5.4 0-9.7 4.3-9.7 9.7 0 1.7.5 3.3 1.3 4.7L6 26l5.4-1.7c1.3.7 2.8 1.1 4.3 1.1 5.4 0 9.7-4.3 9.7-9.7S21.4 6.3 16 6.3zm0 17.1c-1.3 0-2.6-.3-3.7-.9l-.3-.2-3.2 1 1-3.1-.2-.3C8.8 18.3 8.4 17.2 8.4 16c0-4.2 3.4-7.6 7.6-7.6s7.6 3.4 7.6 7.6-3.4 7.6-7.6 7.6zm4.1-5.7c-.2-.1-1.2-.6-1.3-.7-.2-.1-.3-.1-.5.1-.1.2-.6.7-.7.8-.1.1-.2.2-.5.1-1.1-.4-2-1.1-2.7-2-.2-.2.1-.3.2-.4.1-.1.2-.2.3-.4.1-.2 0-.3-.1-.5-.1-.1-.5-1.3-.7-1.7-.2-.4-.3-.3-.5-.3-.2 0-.3 0-.5 0-.2.1-.5.2-.8.5-.3.3-1.1 1.1-1.1 2.6 0 1.4 1.2 2.8 1.4 2.9.2.1 2.3 1.5 4.5 1.5 2.2 0 3.5-1.5 3.6-2.9.2-.3.2-.4 0-.5z" fill="#fff"/></svg>
         Bagikan WhatsApp
       </button>
-      <button id="btnCopyWA" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300 no-print">Copy Text</button>
-      <button id="btnEditRow" class="px-3 py-1 bg-yellow-100 border border-yellow-400 text-yellow-900 rounded text-xs hover:bg-yellow-200 no-print">Edit Baris</button>
-      <button id="btnPrint" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300 no-print">Print</button>
+      <button id="btnCopyWA" class="wa-btn-secondary copy-btn">Copy Text</button>
+      <button id="btnEditRow" class="wa-btn-secondary copy-btn">Edit Baris</button>
+      <button id="btnPrint" class="wa-btn-secondary copy-btn">Print</button>
     </div>
     <div id="waOutput" class="wa-preview"></div>
-  </div>
-</div>
-
-<!-- Overlay Format -->
-<div id="formatOverlay" class="overlay-bg" style="display:none;">
-  <div class="overlay-panel">
-    <button class="close-btn" id="btnCloseFormat" title="Tutup">&times;</button>
-    <div class="font-semibold text-base mb-2 text-center">Format File TXT Jadwal Ronda</div>
-    <div>
-      <ul class="mb-3 pl-4 text-sm list-disc">
-        <li>Setiap baris <b>= 1 jadwal</b> (1 hari, 1 tim)</li>
-        <li>Pemisah antar item: <b>koma ( , )</b></li>
-        <li>Format: <b>Hari, Tanggal, Tim, Anggota1; Anggota2; ...</b></li>
-        <li>Contoh:</li>
-      </ul>
-      <pre id="exampleFormat">
-Rabu, 11 Juni 2025, Tim 1, Putra A.01; Hendra Ds. A.09; Ali B.15
-Kamis, 12 Juni 2025, Tim 2, Ridho A.02; Kamil A.06; Rudi Hartono B.16
-      </pre>
-      <button id="copyFormatExample" class="copy-btn">Copy Format</button>
-      <div class="mt-2 text-xs text-slate-500">Anggota dipisahkan titik koma ( ; )</div>
-    </div>
   </div>
 </div>
 
@@ -242,21 +248,21 @@ Kamis, 12 Juni 2025, Tim 2, Ridho A.02; Kamil A.06; Rudi Hartono B.16
         <b>1. Import Jadwal</b>  
         <ul class="tutorial-list list-disc pl-5">
           <li>Gunakan tombol <b>Import TXT/JSON</b> untuk memasukkan jadwal dari file TXT atau JSON.</li>
-          <li>Format TXT dapat dilihat di menu <b>Format TXT</b>.<br>Format JSON hasil ekspor juga didukung.</li>
+          <li>Format TXT: <i>Hari, Tanggal, Tim, Anggota1; Anggota2; ...</i></li>
         </ul>
       </div>
       <div class="tutorial-step">
         <b>2. Navigasi &amp; Edit Jadwal</b>
         <ul class="tutorial-list list-disc pl-5">
           <li>Pilih tanggal menggunakan picker, atau gunakan tombol <b>&lt;</b> dan <b>&gt;</b> untuk berpindah hari.</li>
-          <li>Untuk mengedit jadwal pada tanggal tertentu, klik <b>Edit Baris</b> lalu simpan perubahan.</li>
+          <li>Edit jadwal per hari dengan klik <b>Edit Baris</b> lalu simpan perubahan.</li>
         </ul>
       </div>
       <div class="tutorial-step">
         <b>3. Bagikan Jadwal ke WhatsApp</b>
         <ul class="tutorial-list list-disc pl-5">
-          <li>Gunakan tombol <b>Bagikan WhatsApp</b> untuk membagikan jadwal hari ini ke WhatsApp (personal/grup).</li>
-          <li>Atau klik <b>Copy Text</b> untuk menyalin teks lalu paste ke aplikasi chat lain.</li>
+          <li>Tombol WhatsApp akan tampil otomatis di bawah pada perangkat mobile jika jadwal tersedia.</li>
+          <li>Di desktop, gunakan tombol "Bagikan WhatsApp" atau copy teks lalu paste ke aplikasi chat lain.</li>
         </ul>
       </div>
       <div class="tutorial-step">
@@ -264,12 +270,12 @@ Kamis, 12 Juni 2025, Tim 2, Ridho A.02; Kamil A.06; Rudi Hartono B.16
         <ul class="tutorial-list list-disc pl-5">
           <li><b>Export TXT</b>: simpan jadwal dalam format teks mudah dibaca.</li>
           <li><b>Export JSON</b>: simpan seluruh data untuk backup/restore.</li>
+          <li><b>Copy Format TXT</b>: salin seluruh jadwal dalam format teks terstruktur.</li>
         </ul>
       </div>
       <div class="tutorial-step">
         <b>5. Lain-lain</b>
         <ul class="tutorial-list list-disc pl-5">
-          <li><b>Copy Format TXT</b>: salin seluruh jadwal untuk diedit di aplikasi lain (misal Excel).</li>
           <li><b>Clear Jadwal</b>: hapus seluruh jadwal (permanen).</li>
           <li><b>Print</b>: cetak jadwal hari ini langsung dari browser.</li>
         </ul>
@@ -279,6 +285,17 @@ Kamis, 12 Juni 2025, Tim 2, Ridho A.02; Kamil A.06; Rudi Hartono B.16
       Fitur akan terus dikembangkan sesuai kebutuhan ronda Anda.
     </div>
   </div>
+</div>
+
+<!-- Mobile Sticky WhatsApp Action Bar -->
+<div id="waActionBar" class="wa-action-bar no-print" style="display:none;">
+  <button id="btnShareWAMobile" class="wa-btn" style="font-size:1.1em;">
+    <svg viewBox="0 0 32 32" fill="none" class="wa-icon"><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M16 6.3c-5.4 0-9.7 4.3-9.7 9.7 0 1.7.5 3.3 1.3 4.7L6 26l5.4-1.7c1.3.7 2.8 1.1 4.3 1.1 5.4 0 9.7-4.3 9.7-9.7S21.4 6.3 16 6.3zm0 17.1c-1.3 0-2.6-.3-3.7-.9l-.3-.2-3.2 1 1-3.1-.2-.3C8.8 18.3 8.4 17.2 8.4 16c0-4.2 3.4-7.6 7.6-7.6s7.6 3.4 7.6 7.6-3.4 7.6-7.6 7.6zm4.1-5.7c-.2-.1-1.2-.6-1.3-.7-.2-.1-.3-.1-.5.1-.1.2-.6.7-.7.8-.1.1-.2.2-.5.1-1.1-.4-2-1.1-2.7-2-.2-.2.1-.3.2-.4.1-.1.2-.2.3-.4.1-.2 0-.3-.1-.5-.1-.1-.5-1.3-.7-1.7-.2-.4-.3-.3-.5-.3-.2 0-.3 0-.5 0-.2.1-.5.2-.8.5-.3.3-1.1 1.1-1.1 2.6 0 1.4 1.2 2.8 1.4 2.9.2.1 2.3 1.5 4.5 1.5 2.2 0 3.5-1.5 3.6-2.9.2-.3.2-.4 0-.5z" fill="#fff"/></svg>
+    Bagikan WhatsApp
+  </button>
+  <button id="btnCopyWAMobile" class="wa-btn-secondary copy-btn">Copy</button>
+  <button id="btnEditRowMobile" class="wa-btn-secondary copy-btn">Edit</button>
+  <button id="btnPrintMobile" class="wa-btn-secondary copy-btn">Print</button>
 </div>
 
 <!-- Toast Notification -->
@@ -367,6 +384,8 @@ function renderPreview() {
   let idx = findByTanggal(currentTanggal);
   if(idx===-1) {
     notFound.textContent = "Tidak ada jadwal untuk tanggal ini.";
+    toggleWAActionBar(false);
+    toggleBtnDesktopWA(false);
     return;
   }
   let j = jadwalArr[idx];
@@ -377,6 +396,8 @@ function renderPreview() {
     <td class="border p-2">${j.members.map(m=>`<span class="inline-block bg-blue-100 rounded px-2 mr-1 mb-1">${m}</span>`).join('')}</td>
   `;
   tbody.appendChild(tr);
+  toggleWAActionBar(true);
+  toggleBtnDesktopWA(true);
 }
 
 // WhatsApp Output
@@ -451,34 +472,6 @@ function showEditPanel(show, idx) {
   }
 }
 
-// Overlay Format
-document.getElementById('btnShowFormat').onclick = function() {
-  document.getElementById('formatOverlay').style.display = '';
-  document.body.style.overflow = 'hidden';
-};
-document.getElementById('btnCloseFormat').onclick = function() {
-  document.getElementById('formatOverlay').style.display = 'none';
-  document.body.style.overflow = '';
-};
-document.getElementById('formatOverlay').onclick = function(e){
-  if(e.target===this){
-    this.style.display='none';
-    document.body.style.overflow = '';
-  }
-};
-// Copy Format Example
-document.getElementById('copyFormatExample').onclick = function() {
-  const txt = document.getElementById('exampleFormat').innerText;
-  navigator.clipboard.writeText(txt);
-  showToast('Format TXT dicopy!');
-};
-// Copy Full Format TXT (dari data actual)
-document.getElementById('btnCopyFormatTxt').onclick = function() {
-  let lines = jadwalArr.map(j=>`${formatTanggalLong(j.date)}, ${j.team}, ${j.members.join('; ')}`);
-  navigator.clipboard.writeText(lines.join('\n'));
-  showToast('Seluruh jadwal dicopy sebagai format TXT!');
-};
-
 // Overlay Tutorial
 document.getElementById('btnShowTutorial').onclick = function() {
   document.getElementById('tutorialOverlay').style.display = '';
@@ -495,6 +488,13 @@ document.getElementById('tutorialOverlay').onclick = function(e){
   }
 };
 
+// Copy Full Format TXT (dari data actual)
+document.getElementById('btnCopyFormatTxt').onclick = function() {
+  let lines = jadwalArr.map(j=>`${formatTanggalLong(j.date)}, ${j.team}, ${j.members.join('; ')}`);
+  navigator.clipboard.writeText(lines.join('\n'));
+  showToast('Seluruh jadwal dicopy sebagai format TXT!');
+};
+
 // Event Listeners
 document.getElementById('datePicker').onchange = function() {
   currentTanggal = this.value;
@@ -503,29 +503,54 @@ document.getElementById('datePicker').onchange = function() {
 document.getElementById('btnPrev').onclick = function() { setTanggalNext(-1); };
 document.getElementById('btnNext').onclick = function() { setTanggalNext(1); };
 
-// WhatsApp
+// WhatsApp Desktop
+function toggleBtnDesktopWA(show) {
+  document.getElementById('waBtnDesktop').style.display = show ? '' : 'none';
+}
 document.getElementById('btnShareWA').onclick = function() {
-  let waText = generateWAOutput();
-  if(waText.startsWith('Tidak ada')) { showToast('Tidak ada jadwal hari ini.'); return; }
-  // Use WhatsApp Web if on desktop, use native share if on mobile
-  if (navigator.share) {
-    navigator.share({text: waText}).catch(()=>{});
-  } else {
-    window.open('https://wa.me/?text='+encodeURIComponent(waText), '_blank');
-  }
+  shareToWA();
 };
 document.getElementById('btnCopyWA').onclick = function() {
   let waText = generateWAOutput();
   navigator.clipboard.writeText(waText).then(()=>showToast('Teks disalin!'));
 };
-document.getElementById('btnPrint').onclick = function(){ window.print(); };
-
-// Edit
 document.getElementById('btnEditRow').onclick = function() {
   let idx = findByTanggal(currentTanggal);
   if(idx===-1) { showToast('Tidak ada jadwal untuk diedit!'); return; }
   showEditPanel(true, idx);
 };
+document.getElementById('btnPrint').onclick = function(){ window.print(); };
+
+// WhatsApp Mobile Sticky Bar
+function toggleWAActionBar(show) {
+  let bar = document.getElementById('waActionBar');
+  bar.style.display = show ? '' : 'none';
+}
+document.getElementById('btnShareWAMobile').onclick = function() {
+  shareToWA();
+};
+document.getElementById('btnCopyWAMobile').onclick = function() {
+  let waText = generateWAOutput();
+  navigator.clipboard.writeText(waText).then(()=>showToast('Teks disalin!'));
+};
+document.getElementById('btnEditRowMobile').onclick = function() {
+  let idx = findByTanggal(currentTanggal);
+  if(idx===-1) { showToast('Tidak ada jadwal untuk diedit!'); return; }
+  showEditPanel(true, idx);
+};
+document.getElementById('btnPrintMobile').onclick = function(){ window.print(); };
+
+function shareToWA() {
+  let waText = generateWAOutput();
+  if(waText.startsWith('Tidak ada')) { showToast('Tidak ada jadwal hari ini.'); return; }
+  if (navigator.share) {
+    navigator.share({text: waText}).catch(()=>{});
+  } else {
+    window.open('https://wa.me/?text='+encodeURIComponent(waText), '_blank');
+  }
+}
+
+// Edit
 document.getElementById('btnCancelEdit').onclick = function() {
   showEditPanel(false);
 };
