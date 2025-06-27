@@ -105,7 +105,7 @@
                     Import
                 </button>
                 <button id="btnExportJson" class="btn btn-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v-2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg>
                     Export
                 </button>
                 <button id="btnCopyFormatTxt" class="btn btn-secondary">
@@ -336,7 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="border-t border-slate-200 dark:border-slate-700 mt-5 pt-4 flex gap-2 justify-end no-print">
                     <button class="btn btn-secondary btn-sm btn-edit" data-index="${index}" title="Edit">Edit</button>
                     <button class="btn btn-secondary btn-sm btn-copy" data-index="${index}" title="Copy Text">Copy</button>
-                    <button class="btn btn-sm" style="background-color:#25D366; color:white;" data-index="${index}" title="Bagikan ke WhatsApp">Share WA</button>
+                    <button class="btn btn-sm btn-wa-share" style="background-color:#25D366; color:white;" data-index="${index}" title="Bagikan ke WhatsApp">Share WA</button>
                 </div>
             `;
             scheduleContainer.appendChild(card);
@@ -349,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const settings = { title: "RONDA MALAM", jam: "23.00–04.00 WIB" };
         const selanjutnya = jadwalArr.filter(row => row.team === j.team && row.date > j.date).map(row => `• ${formatTanggalLong(row.date)}`).join('\n') || '• -';
         const randomQuote = randomKata2[Math.floor(Math.random() * randomKata2.length)];
-        return `�🚨 *${settings.title}* 🚨🔥\n\n` +
+        return `🚨 *${settings.title}* 🚨🔥\n\n` +
                `📆 *${formatTanggalLong(j.date)}*\n` +
                `⏰ *Waktu Jaga:* ${settings.jam}\n\n` +
                `👥 *${j.team}*\n` +
@@ -450,12 +450,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     showToast('Gagal menyalin teks.');
                 });
         }
-        else if(target.style.backgroundColor.includes('25d366')) { // WA Share button
+        else if(target.classList.contains('btn-wa-share')) {
+            // Optimized WhatsApp sharing
             const waText = generateWAOutput(index);
-            if (navigator.share) {
-                navigator.share({ text: waText }).catch(() => {});
+            // Prefer WhatsApp Web if on desktop, WhatsApp app if on mobile
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+            // Custom fallback for WhatsApp share
+            const waUrl = isMobile
+                ? 'whatsapp://send?text=' + encodeURIComponent(waText)
+                : 'https://wa.me/?text=' + encodeURIComponent(waText);
+
+            // Try Web Share API with WhatsApp if available (on mobile, with WhatsApp installed)
+            if (navigator.share && isMobile) {
+                navigator.share({ text: waText })
+                    .catch(() => {
+                        // fallback ke WhatsApp URL jika user cancel atau tidak support
+                        window.open(waUrl, '_blank');
+                    });
             } else {
-                window.open('https://wa.me/?text=' + encodeURIComponent(waText), '_blank');
+                window.open(waUrl, '_blank');
             }
         }
     });
