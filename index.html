@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Ronda Malam Scheduler</title>
   <!-- Tailwind CDN for fast utility classes -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="color-scheme" content="dark light">
   <style>
-    body {
-      transition: background 0.2s, color 0.2s;
+    html {
+      /* Support for prefers-color-scheme */
+      color-scheme: light dark;
     }
-    @media (max-width: 600px) {
-      .max-w-2xl { max-width: 99vw !important; }
-      .p-4 { padding: 1.2rem !important; }
+    @media (max-width:600px) {
+      .max-w-2xl { max-width: 100vw !important; }
+      .p-4 { padding: 1.1rem !important; }
+      table, th, td { font-size: 14px !important; }
     }
     @media print {
       body, .bg-white { background: #fff !important; color:#222 !important;}
@@ -20,88 +23,147 @@
       .max-w-2xl { max-width: 100vw !important; }
       pre, textarea { background: #fff !important; color: #000 !important;}
       #mainBody { color: #000 !important;}
-      #darkToggle, #btnShareWA, #btnCopyWA, #btnImport, #btnExportTxt, #btnExportJson, #btnClear, #btnParse, #btnGenerateWA { display:none !important;}
+      .no-print { display:none !important;}
     }
-    body.dark, .dark .bg-white { background: #18181b !important; color: #e5e7eb !important;}
-    body.dark .bg-white, body.dark .bg-slate-50, body.dark .bg-slate-100, body.dark .bg-slate-200 { background: #232329 !important; color: #e5e7eb !important;}
-    body.dark pre, body.dark textarea { background: #252534 !important; color: #f1f5f9 !important;}
+    .wa-btn {
+      background: #25D366;
+      color: white;
+      font-weight: 700;
+      border-radius: 6px;
+      padding: 0.5rem 1.3rem;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      transition: background 0.2s;
+    }
+    .wa-btn:hover {
+      background: #1ebd5a;
+    }
+    .wa-icon {
+      width: 1.2em; height: 1.2em; display:inline-block; vertical-align:middle;
+    }
+    .cursor-pointer { cursor: pointer; }
+    body {
+      transition: background 0.2s, color 0.2s;
+    }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-700 transition-colors" id="mainBody">
 
-<div class="max-w-2xl mx-auto mt-4 p-4 bg-white rounded shadow">
-  <div class="flex items-center justify-between mb-2">
-    <h1 class="text-xl font-bold" id="appTitle">Ronda Malam Scheduler</h1>
-    <button id="darkToggle" class="text-xs px-2 py-1 rounded bg-slate-200 hover:bg-slate-300">Dark Mode</button>
-  </div>
-  <!-- SETTINGS -->
-  <form id="settingsForm" class="flex gap-2 mb-4 flex-wrap">
-    <input type="text" id="inputTitle" class="flex-1 border rounded p-1 text-sm" value="RONDA MALAM KAISAR RESIDENCE" placeholder="Judul">
-    <input type="text" id="inputJam" class="flex-1 border rounded p-1 text-sm" value="23.00–04.00 WIB" placeholder="Jam Shift">
-    <input type="text" id="inputTz" class="flex-1 border rounded p-1 text-sm" value="WIB" placeholder="Zona Waktu">
-  </form>
-  <!-- ADD BARIS -->
-  <form id="addRowForm" class="flex gap-2 mb-2 flex-wrap">
-    <input type="date" id="addTanggal" class="border rounded p-1 text-sm flex-1" required>
-    <input type="text" id="addTeam" class="border rounded p-1 text-sm flex-1" placeholder="Tim 1" required>
-    <input type="text" id="addAnggota" class="border rounded p-1 text-sm flex-[2]" placeholder="Nama1; Nama2; ..." required>
-    <button class="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700" type="submit">Tambah</button>
-  </form>
-  <!-- IMPORT/EXPORT -->
-  <div class="flex flex-wrap gap-2 mb-2">
+<div class="max-w-2xl mx-auto mt-3 p-2 md:p-4 bg-white rounded shadow">
+  <h1 class="text-lg md:text-2xl font-bold text-center mb-2">Ronda Malam Scheduler</h1>
+  <!-- Import / Export -->
+  <div class="flex flex-wrap gap-2 mb-3 no-print justify-center">
     <input type="file" id="inputFile" accept=".txt,.json" class="hidden" />
-    <button id="btnImport" class="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">Import</button>
+    <button id="btnImport" class="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">Import TXT</button>
     <button id="btnExportTxt" class="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700">Export TXT</button>
     <button id="btnExportJson" class="px-3 py-1 bg-sky-600 text-white rounded text-xs hover:bg-sky-700">Export JSON</button>
     <button id="btnClear" class="px-3 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700">Clear Jadwal</button>
   </div>
-  <!-- TEXTAREA PARSE -->
-  <div>
-    <textarea id="jadwalText" rows="4" class="w-full border rounded p-2 mb-2 text-sm" placeholder="Paste batch jadwal.txt di sini..."></textarea>
-    <button id="btnParse" class="px-3 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700">Parse & Simpan</button>
+  <!-- Tanggal Picker -->
+  <div class="flex flex-col md:flex-row md:items-center gap-2 mb-3">
+    <label class="font-semibold flex-shrink-0 min-w-[110px]">Pilih Tanggal:</label>
+    <input type="date" id="datePicker" class="border rounded p-1 text-sm flex-1 max-w-xs" />
+    <button id="btnPrev" class="px-2 py-1 text-xs rounded bg-slate-100 hover:bg-slate-200 border border-slate-200 no-print">&lt;</button>
+    <button id="btnNext" class="px-2 py-1 text-xs rounded bg-slate-100 hover:bg-slate-200 border border-slate-200 no-print">&gt;</button>
+  </div>
+  <!-- Preview Tabel -->
+  <div id="previewContainer" class="mb-3">
+    <table class="w-full border text-sm rounded overflow-hidden">
+      <thead>
+        <tr class="bg-slate-200 dark:bg-slate-700">
+          <th class="p-2 border">Tanggal</th>
+          <th class="p-2 border">Tim</th>
+          <th class="p-2 border">Anggota</th>
+        </tr>
+      </thead>
+      <tbody id="previewTableBody"></tbody>
+    </table>
+    <div id="notFound" class="text-center text-slate-400 p-3"></div>
+  </div>
+  <!-- Edit -->
+  <div id="editRowPanel" class="mb-3 hidden">
+    <div class="bg-slate-100 rounded p-2 mb-2">
+      <div class="mb-2 font-semibold">Edit Jadwal</div>
+      <form id="editForm" class="flex flex-col gap-1">
+        <label>Tanggal: <input type="date" id="editTanggal" class="border rounded p-1 text-sm" required></label>
+        <label>Tim: <input type="text" id="editTeam" class="border rounded p-1 text-sm" required></label>
+        <label>Anggota: <input type="text" id="editAnggota" class="border rounded p-1 text-sm" required></label>
+        <div class="flex gap-2 mt-2">
+          <button class="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700" type="submit">Simpan</button>
+          <button id="btnCancelEdit" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300" type="button">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- WhatsApp Output -->
+  <div class="mt-2 mb-2 bg-slate-100 rounded p-3">
+    <div class="flex flex-wrap gap-2 mb-2 items-center">
+      <button id="btnShareWA" class="wa-btn no-print"><svg viewBox="0 0 32 32" fill="none" class="wa-icon"><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M16 6.3c-5.4 0-9.7 4.3-9.7 9.7 0 1.7.5 3.3 1.3 4.7L6 26l5.4-1.7c1.3.7 2.8 1.1 4.3 1.1 5.4 0 9.7-4.3 9.7-9.7S21.4 6.3 16 6.3zm0 17.1c-1.3 0-2.6-.3-3.7-.9l-.3-.2-3.2 1 1-3.1-.2-.3C8.8 18.3 8.4 17.2 8.4 16c0-4.2 3.4-7.6 7.6-7.6s7.6 3.4 7.6 7.6-3.4 7.6-7.6 7.6zm4.1-5.7c-.2-.1-1.2-.6-1.3-.7-.2-.1-.3-.1-.5.1-.1.2-.6.7-.7.8-.1.1-.2.2-.5.1-1.1-.4-2-1.1-2.7-2-.2-.2.1-.3.2-.4.1-.1.2-.2.3-.4.1-.2 0-.3-.1-.5-.1-.1-.5-1.3-.7-1.7-.2-.4-.3-.3-.5-.3-.2 0-.3 0-.5 0-.2.1-.5.2-.8.5-.3.3-1.1 1.1-1.1 2.6 0 1.4 1.2 2.8 1.4 2.9.2.1 2.3 1.5 4.5 1.5 2.2 0 3.5-1.5 3.6-2.9.2-.3.2-.4 0-.5z" fill="#fff"/></svg>Bagikan WhatsApp</button>
+      <button id="btnCopyWA" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300 no-print">Copy Text</button>
+      <button id="btnEditRow" class="px-3 py-1 bg-yellow-100 border border-yellow-400 text-yellow-900 rounded text-xs hover:bg-yellow-200 no-print">Edit Baris</button>
+      <button id="btnPrint" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300 no-print">Print</button>
+    </div>
+    <pre id="waOutput" class="whitespace-pre-wrap text-slate-700 text-sm bg-transparent"></pre>
   </div>
 </div>
 
-<!-- PREVIEW & CRUD -->
-<div class="max-w-2xl mx-auto mt-4 p-4 bg-white rounded shadow">
-  <h2 class="text-lg font-semibold mb-2">Preview Jadwal & Edit</h2>
-  <div id="jadwalList" class="flex flex-col gap-2"></div>
-</div>
-
-<!-- OUTPUT WA -->
-<div class="max-w-2xl mx-auto mt-4 mb-8 p-4 bg-white rounded shadow">
-  <h2 class="text-lg font-semibold mb-2">Output WhatsApp</h2>
-  <div class="mb-2 flex gap-2">
-    <button id="btnShareWA" class="px-3 py-1 bg-green-500 text-white rounded text-xs hover:bg-green-600">Share to WhatsApp</button>
-    <button id="btnCopyWA" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300">Copy Text</button>
-    <button id="btnPrint" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300">Print Jadwal</button>
-  </div>
-  <pre id="waOutput" class="whitespace-pre-wrap bg-slate-100 p-3 rounded text-sm"></pre>
-</div>
+<!-- Toast Notification -->
 <div id="toast" class="fixed left-1/2 bottom-7 px-4 py-2 rounded shadow text-white bg-slate-800 text-sm z-50 transition-all" style="display:none;transform:translateX(-50%);"></div>
+
 <script>
-// State
 let jadwalArr = [];
-let settings = { title: "RONDA MALAM KAISAR RESIDENCE", jam: "23.00–04.00 WIB", tz: "WIB" };
-const STORAGE_KEY = "ronda_jadwal_v2";
-const SETTINGS_KEY = "ronda_settings_v2";
+let currentTanggal = null;
+let editIdx = null;
+const STORAGE_KEY = "ronda_jadwal_v3";
+const randomKata2 = [
+  "Keamanan Kita Prioritas!",
+  "Utamakan Siskamling, Nyaman Bersama!",
+  "Bersama, Lingkungan Aman Nyaman!",
+  "Jaga Lingkungan, Jaga Keluarga!",
+  "Satukan Langkah, Aman Bersama!",
+  "Ronda untuk Harmoni Bersama!",
+  "Bersatu Menjaga, Damai Dirasa!",
+  "Bersama kita lebih kuat!",
+  "Ronda Malam, Wujud Peduli!",
+  "Ayo Jaga Malam, Demi Kenyamanan!"
+];
 
-// Utils
-function showToast(msg) { const t=document.getElementById('toast');t.textContent=msg;t.style.display='';t.style.opacity='1';setTimeout(()=>{t.style.opacity='0';},1500);setTimeout(()=>{t.style.display='none';},1800);}
-function pad(n){return n<10?'0'+n:n;}
-function parseTanggalToISO(s){s=s.trim().replace(/^[A-Za-z]+,\s*/,'');let [tgl,bln,th]=s.split(' ');if(!tgl||!bln||!th)return null;const bulan={Januari:1,Februari:2,Maret:3,April:4,Mei:5,Juni:6,Juli:7,Agustus:8,September:9,Oktober:10,November:11,Desember:12,Jan:1,Feb:2,Mar:3,Apr:4,Mei:5,Jun:6,Jul:7,Agu:8,Sep:9,Okt:10,Nov:11,Des:12};let m=bulan[bln];if(!m)return null;return `${th}-${pad(m)}-${pad(parseInt(tgl,10))}`;}
-function formatTanggalLong(iso){const hari=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];const bulan=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];let d=new Date(iso);if(isNaN(d))return iso;return `${hari[d.getDay()]}, ${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = '';
+  t.style.opacity = '1';
+  setTimeout(() => { t.style.opacity = '0'; }, 1600);
+  setTimeout(() => { t.style.display = 'none'; }, 1900);
+}
 
-// LocalStorage
-function saveJadwal(arr){localStorage.setItem(STORAGE_KEY,JSON.stringify(arr));}
-function loadJadwal(){let d=localStorage.getItem(STORAGE_KEY);try{return d?JSON.parse(d):[];}catch{return [];}}
-function saveSettings(obj){localStorage.setItem(SETTINGS_KEY,JSON.stringify(obj));}
-function loadSettings(){let d=localStorage.getItem(SETTINGS_KEY);try{return d?JSON.parse(d):null;}catch{return null;}}
+// Format dan parsing tanggal (ID)
+function pad(n){ return n<10?'0'+n:n; }
+function formatTanggalLong(iso){
+  const hari=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const bulan=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  let d=new Date(iso);
+  if(isNaN(d)) return iso;
+  return `${hari[d.getDay()]}, ${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
+}
+function parseTanggalToISO(s){
+  s=s.trim().replace(/^[A-Za-z]+,\s*/,'');
+  let [tgl,bln,th]=s.split(' ');
+  if(!tgl||!bln||!th)return null;
+  const bulan={Januari:1,Februari:2,Maret:3,April:4,Mei:5,Juni:6,Juli:7,Agustus:8,September:9,Oktober:10,November:11,Desember:12,
+    Jan:1,Feb:2,Mar:3,Apr:4,Mei:5,Jun:6,Jul:7,Agu:8,Sep:9,Okt:10,Nov:11,Des:12};
+  let m=bulan[bln];
+  if(!m)return null;
+  return `${th}-${pad(m)}-${pad(parseInt(tgl,10))}`;
+}
 
 // Parse TXT
 function parseJadwalTxt(txt){
   const lines=txt.split('\n').map(l=>l.trim()).filter(l=>!!l&&!/Jadwal\s+Tim/i.test(l));
-  let res=[];for(let line of lines){
+  let res=[];
+  for(let line of lines){
     let parts=line.split(',');
     if(parts.length<4)continue;
     let tanggal=parts[1].trim();
@@ -112,108 +174,158 @@ function parseJadwalTxt(txt){
     if(!iso)continue;
     res.push({date:iso,team,members});
   }
-  return res;
+  return res.sort((a,b)=>a.date.localeCompare(b.date));
 }
 
-// Render List
-function renderJadwalList(){
-  const d=document.getElementById('jadwalList');
-  if(!jadwalArr.length){d.innerHTML='<div class="text-slate-400 italic">Belum ada jadwal.</div>';return;}
-  d.innerHTML='';
-  jadwalArr.forEach((j,idx)=>{
-    const card=document.createElement('div');
-    card.className="p-2 rounded border flex flex-col gap-1 bg-slate-50 dark:bg-slate-900";
-    card.innerHTML=`
-    <div class="flex justify-between items-center">
-      <span class="font-semibold">${formatTanggalLong(j.date)}</span>
-      <div>
-        <button class="text-xs px-2 py-1 rounded bg-slate-200 hover:bg-slate-400 mr-1" data-edit="${idx}">Edit</button>
-        <button class="text-xs px-2 py-1 rounded bg-red-200 hover:bg-red-400" data-del="${idx}">Delete</button>
-      </div>
-    </div>
-    <div class="flex flex-wrap gap-2 text-sm">
-      <span class="font-semibold">${j.team}</span>
-      <span>|</span>
-      <span>${j.members.map(m=>`<span class="rounded bg-blue-100 px-2 mr-1">${m}</span>`).join('')}</span>
-    </div>`;
-    d.appendChild(card);
-    card.querySelector(`[data-del="${idx}"]`).onclick=()=>{jadwalArr.splice(idx,1);saveJadwal(jadwalArr);renderJadwalList();renderWAOutput();}
-    card.querySelector(`[data-edit="${idx}"]`).onclick=()=>{
-      document.getElementById('addTanggal').value=j.date;
-      document.getElementById('addTeam').value=j.team;
-      document.getElementById('addAnggota').value=j.members.join('; ');
-      jadwalArr.splice(idx,1);
-      saveJadwal(jadwalArr);
-      renderJadwalList();
-      renderWAOutput();
-      showToast('Edit baris pada form, lalu klik Tambah');
-    }
-  });
+// LocalStorage
+function saveJadwal(arr){ localStorage.setItem(STORAGE_KEY,JSON.stringify(arr)); }
+function loadJadwal(){ let d=localStorage.getItem(STORAGE_KEY); try{return d?JSON.parse(d):[];}catch{return [];} }
+
+// Cari index berdasar tanggal
+function findByTanggal(tanggal) {
+  return jadwalArr.findIndex(j=>j.date===tanggal);
+}
+
+// Render Tabel Preview
+function renderPreview() {
+  const tbody = document.getElementById('previewTableBody');
+  const notFound = document.getElementById('notFound');
+  tbody.innerHTML = '';
+  notFound.textContent = '';
+  let idx = findByTanggal(currentTanggal);
+  if(idx===-1) {
+    notFound.textContent = "Tidak ada jadwal untuk tanggal ini.";
+    return;
+  }
+  let j = jadwalArr[idx];
+  let tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="border p-2">${formatTanggalLong(j.date)}</td>
+    <td class="border p-2">${j.team}</td>
+    <td class="border p-2">${j.members.map(m=>`<span class="inline-block bg-blue-100 rounded px-2 mr-1 mb-1">${m}</span>`).join('')}</td>
+  `;
+  tbody.appendChild(tr);
 }
 
 // WhatsApp Output
-function generateWAOutput(jadwalArr,settings){
-  if(!jadwalArr.length)return 'Belum ada jadwal!';
-  let grouped={};jadwalArr.forEach(j=>{if(!grouped[j.team])grouped[j.team]=[];grouped[j.team].push(j);});
-  Object.values(grouped).forEach(arr=>arr.sort((a,b)=>a.date.localeCompare(b.date)));
-  let outputArr=[];
-  for(let team in grouped){
-    let sorted=grouped[team],first=sorted[0],others=sorted.slice(1);
-    outputArr.push(
+function randomKalimatPenutup() {
+  let idx = Math.floor(Math.random()*randomKata2.length);
+  return randomKata2[idx];
+}
+function generateWAOutput() {
+  let idx = findByTanggal(currentTanggal);
+  if(idx===-1) return 'Tidak ada jadwal untuk tanggal ini.';
+  const settings = {
+    title: "RONDA MALAM KAISAR RESIDENCE",
+    jam: "23.00–04.00 WIB",
+    tz: "WIB"
+  };
+  let j = jadwalArr[idx];
+  // Cari jadwal selanjutnya tim yang sama
+  let selanjutnya = jadwalArr.filter(row => row.team === j.team && row.date > j.date)
+    .map(row=>`• ${formatTanggalLong(row.date)}`).join('\n') || '• -';
+  return (
 `🔥🚨 *${settings.title}* 🚨🔥
 
-📆 *${formatTanggalLong(first.date)}*  
+📆 *${formatTanggalLong(j.date)}*  
 ⏰ *Waktu Jaga:* ${settings.jam}  
 
-👥 *${first.team}*  
+👥 *${j.team}*  
 👮‍♂️ *Petugas:*  
-${first.members.map(m=>`• ${m}`).join('\n')}
+${j.members.map(m=>`• ${m}`).join('\n')}
 
-📌 *Jadwal Selanjutnya ${first.team}:*  
-${others.map(j=>`• ${formatTanggalLong(j.date)}`).join('\n')||'• -'}
+📌 *Jadwal Selanjutnya ${j.team}:*  
+${selanjutnya}
 
 🙏 Terima kasih atas partisipasinya.  
 Mari jaga lingkungan tetap aman dan nyaman bersama-sama.  
 
-💥 *Keamanan Kita Prioritas!* 💥
+💥 *${randomKalimatPenutup()}* 💥
 `
-    );
+  );
+}
+function renderWAOutput() {
+  document.getElementById('waOutput').textContent = generateWAOutput();
+}
+
+// Tanggal picker: set ke earliest/latest jika < atau >
+function setTanggalNext(dir) {
+  if(!jadwalArr.length) return;
+  let idx = findByTanggal(currentTanggal);
+  if(idx===-1) {
+    currentTanggal = jadwalArr[0].date;
+  } else {
+    let nextIdx = idx+dir;
+    if(nextIdx >=0 && nextIdx < jadwalArr.length) {
+      currentTanggal = jadwalArr[nextIdx].date;
+    }
   }
-  return outputArr.join('\n\n—\n\n');
-}
-function renderWAOutput(){
-  document.getElementById('waOutput').textContent=generateWAOutput(jadwalArr,settings);
+  document.getElementById('datePicker').value = currentTanggal;
+  renderPreview(); renderWAOutput();
 }
 
-// SETTINGS
-function updateSettingsFromForm(){
-  settings.title=document.getElementById('inputTitle').value.trim()||'RONDA MALAM KAISAR RESIDENCE';
-  settings.jam=document.getElementById('inputJam').value.trim()||'23.00–04.00 WIB';
-  settings.tz=document.getElementById('inputTz').value.trim()||'WIB';
-  saveSettings(settings);
-  renderWAOutput();
-  document.getElementById('appTitle').textContent=settings.title;
-}
-document.getElementById('settingsForm').oninput=updateSettingsFromForm;
-
-// DARK MODE
-document.getElementById('darkToggle').onclick=function(){
-  document.body.classList.toggle('dark');
-  localStorage.setItem('ronda_dark',document.body.classList.contains('dark')?"1":"0");
+// Edit Panel
+function showEditPanel(show, idx) {
+  const panel = document.getElementById('editRowPanel');
+  panel.classList.toggle('hidden', !show);
+  if(show) {
+    editIdx = idx;
+    let j = jadwalArr[idx];
+    document.getElementById('editTanggal').value = j.date;
+    document.getElementById('editTeam').value = j.team;
+    document.getElementById('editAnggota').value = j.members.join('; ');
+  } else {
+    editIdx = null;
+  }
 }
 
-// ADD BARIS
-document.getElementById('addRowForm').onsubmit=function(e){
+// Event Listeners
+document.getElementById('datePicker').onchange = function() {
+  currentTanggal = this.value;
+  renderPreview(); renderWAOutput();
+};
+document.getElementById('btnPrev').onclick = function() { setTanggalNext(-1); };
+document.getElementById('btnNext').onclick = function() { setTanggalNext(1); };
+
+// WhatsApp
+document.getElementById('btnShareWA').onclick = function() {
+  let waText = generateWAOutput();
+  if(waText.startsWith('Tidak ada')) { showToast('Tidak ada jadwal hari ini.'); return; }
+  window.open('https://wa.me/?text='+encodeURIComponent(waText), '_blank');
+};
+document.getElementById('btnCopyWA').onclick = function() {
+  let waText = generateWAOutput();
+  navigator.clipboard.writeText(waText);
+  showToast('Teks disalin!');
+};
+document.getElementById('btnPrint').onclick = function(){ window.print(); };
+
+// Edit
+document.getElementById('btnEditRow').onclick = function() {
+  let idx = findByTanggal(currentTanggal);
+  if(idx===-1) { showToast('Tidak ada jadwal untuk diedit!'); return; }
+  showEditPanel(true, idx);
+};
+document.getElementById('btnCancelEdit').onclick = function() {
+  showEditPanel(false);
+};
+document.getElementById('editForm').onsubmit = function(e){
   e.preventDefault();
-  let date=document.getElementById('addTanggal').value,team=document.getElementById('addTeam').value,members=document.getElementById('addAnggota').value;
-  if(!date||!team||!members){showToast('Lengkapi semua input!');return;}
-  jadwalArr.push({date,team,members:members.split(';').map(m=>m.trim()).filter(Boolean)});
+  if(editIdx===null) return;
+  let tgl = document.getElementById('editTanggal').value;
+  let tim = document.getElementById('editTeam').value;
+  let anggota = document.getElementById('editAnggota').value;
+  if(!tgl||!tim||!anggota) { showToast('Lengkapi semua input!'); return;}
+  jadwalArr[editIdx] = { date: tgl, team: tim, members: anggota.split(';').map(m=>m.trim()).filter(Boolean) };
   saveJadwal(jadwalArr);
-  renderJadwalList();renderWAOutput();
-  document.getElementById('addTanggal').value='';document.getElementById('addTeam').value='';document.getElementById('addAnggota').value='';
-}
+  currentTanggal = tgl;
+  document.getElementById('datePicker').value = currentTanggal;
+  showEditPanel(false);
+  renderPreview(); renderWAOutput();
+  showToast('Jadwal disimpan!');
+};
 
-// IMPORT
+// Import/Export
 document.getElementById('btnImport').onclick=()=>document.getElementById('inputFile').click();
 document.getElementById('inputFile').onchange=function(e){
   const f=e.target.files[0];if(!f)return;
@@ -224,13 +336,17 @@ document.getElementById('inputFile').onchange=function(e){
     }else{
       jadwalArr=parseJadwalTxt(ev.target.result);
     }
-    saveJadwal(jadwalArr);renderJadwalList();renderWAOutput();
+    saveJadwal(jadwalArr);
+    // Default ke tanggal hari ini jika ada, jika tidak ke jadwal pertama
+    let today = (new Date()).toISOString().slice(0,10);
+    if(findByTanggal(today)!==-1) currentTanggal = today;
+    else if(jadwalArr.length) currentTanggal = jadwalArr[0].date;
+    document.getElementById('datePicker').value = currentTanggal;
+    renderPreview(); renderWAOutput();
     showToast('Berhasil import!');
   };
   r.readAsText(f);
-}
-
-// EXPORT
+};
 document.getElementById('btnExportTxt').onclick=function(){
   let lines=jadwalArr.map(j=>`${formatTanggalLong(j.date)}, ${j.team}, ${j.members.join('; ')}`);
   let blob=new Blob([lines.join('\n')],{type:'text/plain'}),a=document.createElement('a');
@@ -240,35 +356,29 @@ document.getElementById('btnExportJson').onclick=function(){
   let blob=new Blob([JSON.stringify(jadwalArr,null,2)],{type:'application/json'}),a=document.createElement('a');
   a.href=URL.createObjectURL(blob);a.download="jadwal_ronda.json";a.click();URL.revokeObjectURL(a.href);showToast('Export JSON!');
 };
-
-// CLEAR
 document.getElementById('btnClear').onclick=function(){
-  if(confirm('Hapus semua jadwal?')){jadwalArr=[];saveJadwal(jadwalArr);renderJadwalList();renderWAOutput();}
-}
-
-// PARSE & SIMPAN
-document.getElementById('btnParse').onclick=function(){
-  let txt=document.getElementById('jadwalText').value;
-  let arr=parseJadwalTxt(txt);
-  if(!arr.length){showToast('Format tidak dikenali!');return;}
-  jadwalArr=arr;saveJadwal(jadwalArr);renderJadwalList();renderWAOutput();showToast('Jadwal diparse & simpan!');
+  if(confirm('Hapus semua jadwal?')){jadwalArr=[];saveJadwal(jadwalArr);renderPreview();renderWAOutput();}
+  let today = (new Date()).toISOString().slice(0,10);
+  currentTanggal = today;
+  document.getElementById('datePicker').value = today;
 };
 
-// WA
-document.getElementById('btnShareWA').onclick=function(){
-  let waText=document.getElementById('waOutput').textContent;window.open('https://wa.me/?text='+encodeURIComponent(waText),'_blank');
+// INIT: load, set tanggal ke hari ini
+window.onload = function() {
+  // Set dark mode: auto
+  if(window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.body.classList.add('dark');
+  }
+  jadwalArr = loadJadwal();
+  let today = (new Date()).toISOString().slice(0,10);
+  // Cek apakah hari ini ada jadwal, kalau tidak ke terdekat
+  if(findByTanggal(today)!==-1) currentTanggal = today;
+  else if(jadwalArr.length) currentTanggal = jadwalArr[0].date;
+  else currentTanggal = today;
+  document.getElementById('datePicker').value = currentTanggal;
+  renderPreview(); renderWAOutput();
 };
-document.getElementById('btnCopyWA').onclick=function(){
-  navigator.clipboard.writeText(document.getElementById('waOutput').textContent);showToast('Teks disalin!');
-};
-document.getElementById('btnPrint').onclick=function(){window.print();};
 
-// INIT
-window.onload=function(){
-  if(localStorage.getItem('ronda_dark')==="1")document.body.classList.add('dark');
-  let s=loadSettings();if(s){settings=s;document.getElementById('inputTitle').value=s.title;document.getElementById('inputJam').value=s.jam;document.getElementById('inputTz').value=s.tz;document.getElementById('appTitle').textContent=s.title;}
-  jadwalArr=loadJadwal();renderJadwalList();renderWAOutput();
-};
 </script>
 </body>
 </html>
