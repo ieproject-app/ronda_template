@@ -4,17 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Ronda Malam Scheduler</title>
-  <!-- Tailwind CDN for fast utility classes -->
   <script src="https://cdn.tailwindcss.com"></script>
   <meta name="color-scheme" content="dark light">
   <style>
-    html {
-      /* Support for prefers-color-scheme */
-      color-scheme: light dark;
-    }
+    html { color-scheme: light dark; }
+    body { transition: background 0.2s, color 0.2s; }
     @media (max-width:600px) {
       .max-w-2xl { max-width: 100vw !important; }
-      .p-4 { padding: 1.1rem !important; }
+      .p-4, .p-3 { padding: 0.85rem !important; }
+      .rounded { border-radius: 0.6rem !important; }
       table, th, td { font-size: 14px !important; }
     }
     @media print {
@@ -24,6 +22,50 @@
       pre, textarea { background: #fff !important; color: #000 !important;}
       #mainBody { color: #000 !important;}
       .no-print { display:none !important;}
+    }
+    /* Overlay */
+    .overlay-bg {
+      background: rgba(0,0,0,.58);
+      position: fixed; z-index: 1000;
+      left:0; top:0; width:100vw; height:100vh;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity .25s;
+    }
+    .overlay-panel {
+      background: #fff;
+      max-width: 95vw;
+      width: 370px;
+      border-radius: 1rem;
+      padding: 1.3rem 1rem 1.1rem 1rem;
+      box-shadow: 0 4px 32px #0002;
+      color: #334155;
+      position: relative;
+      font-size: 15px;
+    }
+    body.dark .overlay-panel { background: #232329; color: #f1f5f9;}
+    .overlay-panel pre {
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 13px;
+      border-radius: .5em;
+      margin-top: 12px;
+      padding: 0.9em 1em;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+    .overlay-panel .close-btn {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+      font-size: 1.1em;
+      color: #94a3b8;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color .13s;
+    }
+    .overlay-panel .close-btn:active, .overlay-panel .close-btn:focus, .overlay-panel .close-btn:hover {
+      color: #2563eb;
     }
     .wa-btn {
       background: #25D366;
@@ -37,22 +79,18 @@
       gap: 0.5em;
       transition: background 0.2s;
     }
-    .wa-btn:hover {
-      background: #1ebd5a;
-    }
-    .wa-icon {
-      width: 1.2em; height: 1.2em; display:inline-block; vertical-align:middle;
-    }
+    .wa-btn:hover { background: #1ebd5a; }
+    .wa-icon { width: 1.2em; height: 1.2em; display:inline-block; vertical-align:middle;}
     .cursor-pointer { cursor: pointer; }
-    body {
-      transition: background 0.2s, color 0.2s;
-    }
   </style>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-700 transition-colors" id="mainBody">
+<body class="bg-slate-50 min-h-screen text-slate-700" id="mainBody">
 
-<div class="max-w-2xl mx-auto mt-3 p-2 md:p-4 bg-white rounded shadow">
-  <h1 class="text-lg md:text-2xl font-bold text-center mb-2">Ronda Malam Scheduler</h1>
+<div class="max-w-2xl mx-auto mt-2 p-2 md:p-4 bg-white rounded shadow">
+  <div class="flex items-center justify-between mb-2">
+    <h1 class="text-lg md:text-xl font-bold text-center flex-1">Ronda Malam Scheduler</h1>
+    <button id="btnShowFormat" class="no-print px-2 py-1 text-xs bg-slate-200 rounded ml-2">Format TXT</button>
+  </div>
   <!-- Import / Export -->
   <div class="flex flex-wrap gap-2 mb-3 no-print justify-center">
     <input type="file" id="inputFile" accept=".txt,.json" class="hidden" />
@@ -106,6 +144,27 @@
       <button id="btnPrint" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300 no-print">Print</button>
     </div>
     <pre id="waOutput" class="whitespace-pre-wrap text-slate-700 text-sm bg-transparent"></pre>
+  </div>
+</div>
+
+<!-- Overlay Format -->
+<div id="formatOverlay" class="overlay-bg" style="display:none;">
+  <div class="overlay-panel">
+    <button class="close-btn" id="btnCloseFormat" title="Tutup">&times;</button>
+    <div class="font-semibold text-base mb-2 text-center">Format File TXT Jadwal Ronda</div>
+    <div>
+      <ul class="mb-3 pl-4 text-sm list-disc">
+        <li>Setiap baris <b>= 1 jadwal</b> (1 hari, 1 tim)</li>
+        <li>Pemisah antar item: <b>koma ( , )</b></li>
+        <li>Format: <b>Hari, Tanggal, Tim, Anggota1; Anggota2; ...</b></li>
+        <li>Contoh:</li>
+      </ul>
+      <pre>
+Rabu, 11 Juni 2025, Tim 1, Putra A.01; Hendra Ds. A.09; Ali B.15; Aqsa B.15 Tahap Dua
+Kamis, 12 Juni 2025, Tim 2, Ridho A.02; Kamil A.06; Rudi Hartono B.16
+      </pre>
+      <div class="mt-2 text-xs text-slate-500">Anggota dipisahkan titik koma ( ; )</div>
+    </div>
   </div>
 </div>
 
@@ -201,7 +260,7 @@ function renderPreview() {
   let tr = document.createElement('tr');
   tr.innerHTML = `
     <td class="border p-2">${formatTanggalLong(j.date)}</td>
-    <td class="border p-2">${j.team}</td>
+    <td class="border p-2 font-semibold">${j.team}</td>
     <td class="border p-2">${j.members.map(m=>`<span class="inline-block bg-blue-100 rounded px-2 mr-1 mb-1">${m}</span>`).join('')}</td>
   `;
   tbody.appendChild(tr);
@@ -278,6 +337,23 @@ function showEditPanel(show, idx) {
     editIdx = null;
   }
 }
+
+// Overlay Format
+document.getElementById('btnShowFormat').onclick = function() {
+  document.getElementById('formatOverlay').style.display = '';
+  // Lock scroll
+  document.body.style.overflow = 'hidden';
+};
+document.getElementById('btnCloseFormat').onclick = function() {
+  document.getElementById('formatOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+};
+document.getElementById('formatOverlay').onclick = function(e){
+  if(e.target===this){
+    this.style.display='none';
+    document.body.style.overflow = '';
+  }
+};
 
 // Event Listeners
 document.getElementById('datePicker').onchange = function() {
@@ -371,7 +447,6 @@ window.onload = function() {
   }
   jadwalArr = loadJadwal();
   let today = (new Date()).toISOString().slice(0,10);
-  // Cek apakah hari ini ada jadwal, kalau tidak ke terdekat
   if(findByTanggal(today)!==-1) currentTanggal = today;
   else if(jadwalArr.length) currentTanggal = jadwalArr[0].date;
   else currentTanggal = today;
