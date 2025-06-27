@@ -35,13 +35,18 @@
     .overlay-panel {
       background: #fff;
       max-width: 95vw;
-      width: 370px;
+      width: 385px;
       border-radius: 1rem;
       padding: 1.3rem 1rem 1.1rem 1rem;
       box-shadow: 0 4px 32px #0002;
       color: #334155;
       position: relative;
       font-size: 15px;
+      animation: fadeInOverlay .2s;
+    }
+    @keyframes fadeInOverlay {
+      from { opacity: 0; transform: scale(0.95);}
+      to   { opacity: 1; transform: scale(1);}
     }
     body.dark .overlay-panel { background: #232329; color: #f1f5f9;}
     .overlay-panel pre {
@@ -79,6 +84,8 @@
       align-items: center;
       gap: 0.5em;
       transition: background 0.2s;
+      box-shadow: 0 1px 7px #0001;
+      outline: none;
     }
     .wa-btn:hover { background: #1ebd5a; }
     .wa-icon { width: 1.2em; height: 1.2em; display:inline-block; vertical-align:middle;}
@@ -97,6 +104,40 @@
     .copy-btn:hover { background: #e0e7ef;}
     body.dark .copy-btn { background: #232329; color: #f1f5f9; border-color: #475569;}
     .overflow-x-auto { overflow-x: auto; }
+    /* Tutorial step styling */
+    .tutorial-step {
+      margin-bottom: 1.15em;
+      padding-left: 0.4em;
+      border-left: 3px solid #2563eb;
+      background: #f1f5f9;
+      border-radius: .43em;
+      padding-top: .5em;
+      padding-bottom: .5em;
+    }
+    body.dark .tutorial-step { background: #232329; }
+    .tutorial-list li { margin-bottom: 0.55em;}
+    /* WhatsApp preview box style */
+    .wa-preview {
+      background: #f7fdf9;
+      color: #2d4736;
+      border: 1px solid #25D366;
+      border-radius: .6em;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 1.009em;
+      line-height: 1.65;
+      padding: 0.9em 1em;
+      margin-bottom: 0.5em;
+      min-height: 120px;
+      word-break: break-word;
+      letter-spacing: 0.01em;
+      box-shadow: 0 1px 8px #0001;
+    }
+    body.dark .wa-preview {
+      background: #17291e;
+      color: #e9ffe2;
+      border-color: #25D366;
+    }
+    .wa-btn:focus, .wa-btn:active { outline: 2px solid #2563eb44;}
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-700" id="mainBody">
@@ -104,12 +145,15 @@
 <div class="max-w-2xl mx-auto mt-2 p-2 md:p-4 bg-white rounded shadow">
   <div class="flex items-center justify-between mb-2">
     <h1 class="text-lg md:text-xl font-bold text-center flex-1">Ronda Malam Scheduler</h1>
-    <button id="btnShowFormat" class="no-print px-2 py-1 text-xs bg-slate-200 rounded ml-2">Format TXT</button>
+    <div class="flex gap-2">
+      <button id="btnShowFormat" class="no-print px-2 py-1 text-xs bg-slate-200 rounded ml-2">Format TXT</button>
+      <button id="btnShowTutorial" class="no-print px-2 py-1 text-xs bg-blue-200 rounded ml-1">Tutorial</button>
+    </div>
   </div>
   <!-- Import / Export -->
   <div class="flex flex-wrap gap-2 mb-3 no-print justify-center">
     <input type="file" id="inputFile" accept=".txt,.json" class="hidden" />
-    <button id="btnImport" class="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">Import TXT</button>
+    <button id="btnImport" class="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">Import TXT/JSON</button>
     <button id="btnExportTxt" class="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700">Export TXT</button>
     <button id="btnExportJson" class="px-3 py-1 bg-sky-600 text-white rounded text-xs hover:bg-sky-700">Export JSON</button>
     <button id="btnClear" class="px-3 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700">Clear Jadwal</button>
@@ -154,12 +198,15 @@
   <!-- WhatsApp Output -->
   <div class="mt-2 mb-2 bg-slate-100 rounded p-3">
     <div class="flex flex-wrap gap-2 mb-2 items-center">
-      <button id="btnShareWA" class="wa-btn no-print"><svg viewBox="0 0 32 32" fill="none" class="wa-icon"><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M16 6.3c-5.4 0-9.7 4.3-9.7 9.7 0 1.7.5 3.3 1.3 4.7L6 26l5.4-1.7c1.3.7 2.8 1.1 4.3 1.1 5.4 0 9.7-4.3 9.7-9.7S21.4 6.3 16 6.3zm0 17.1c-1.3 0-2.6-.3-3.7-.9l-.3-.2-3.2 1 1-3.1-.2-.3C8.8 18.3 8.4 17.2 8.4 16c0-4.2 3.4-7.6 7.6-7.6s7.6 3.4 7.6 7.6-3.4 7.6-7.6 7.6zm4.1-5.7c-.2-.1-1.2-.6-1.3-.7-.2-.1-.3-.1-.5.1-.1.2-.6.7-.7.8-.1.1-.2.2-.5.1-1.1-.4-2-1.1-2.7-2-.2-.2.1-.3.2-.4.1-.1.2-.2.3-.4.1-.2 0-.3-.1-.5-.1-.1-.5-1.3-.7-1.7-.2-.4-.3-.3-.5-.3-.2 0-.3 0-.5 0-.2.1-.5.2-.8.5-.3.3-1.1 1.1-1.1 2.6 0 1.4 1.2 2.8 1.4 2.9.2.1 2.3 1.5 4.5 1.5 2.2 0 3.5-1.5 3.6-2.9.2-.3.2-.4 0-.5z" fill="#fff"/></svg>Bagikan WhatsApp</button>
+      <button id="btnShareWA" class="wa-btn no-print" title="Bagikan ke WhatsApp">
+        <svg viewBox="0 0 32 32" fill="none" class="wa-icon"><circle cx="16" cy="16" r="16" fill="#25D366"/><path d="M16 6.3c-5.4 0-9.7 4.3-9.7 9.7 0 1.7.5 3.3 1.3 4.7L6 26l5.4-1.7c1.3.7 2.8 1.1 4.3 1.1 5.4 0 9.7-4.3 9.7-9.7S21.4 6.3 16 6.3zm0 17.1c-1.3 0-2.6-.3-3.7-.9l-.3-.2-3.2 1 1-3.1-.2-.3C8.8 18.3 8.4 17.2 8.4 16c0-4.2 3.4-7.6 7.6-7.6s7.6 3.4 7.6 7.6-3.4 7.6-7.6 7.6zm4.1-5.7c-.2-.1-1.2-.6-1.3-.7-.2-.1-.3-.1-.5.1-.1.2-.6.7-.7.8-.1.1-.2.2-.5.1-1.1-.4-2-1.1-2.7-2-.2-.2.1-.3.2-.4.1-.1.2-.2.3-.4.1-.2 0-.3-.1-.5-.1-.1-.5-1.3-.7-1.7-.2-.4-.3-.3-.5-.3-.2 0-.3 0-.5 0-.2.1-.5.2-.8.5-.3.3-1.1 1.1-1.1 2.6 0 1.4 1.2 2.8 1.4 2.9.2.1 2.3 1.5 4.5 1.5 2.2 0 3.5-1.5 3.6-2.9.2-.3.2-.4 0-.5z" fill="#fff"/></svg>
+        Bagikan WhatsApp
+      </button>
       <button id="btnCopyWA" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300 no-print">Copy Text</button>
       <button id="btnEditRow" class="px-3 py-1 bg-yellow-100 border border-yellow-400 text-yellow-900 rounded text-xs hover:bg-yellow-200 no-print">Edit Baris</button>
       <button id="btnPrint" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300 no-print">Print</button>
     </div>
-    <pre id="waOutput" class="whitespace-pre-wrap text-slate-700 text-sm bg-transparent"></pre>
+    <div id="waOutput" class="wa-preview"></div>
   </div>
 </div>
 
@@ -181,6 +228,55 @@ Kamis, 12 Juni 2025, Tim 2, Ridho A.02; Kamil A.06; Rudi Hartono B.16
       </pre>
       <button id="copyFormatExample" class="copy-btn">Copy Format</button>
       <div class="mt-2 text-xs text-slate-500">Anggota dipisahkan titik koma ( ; )</div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay Tutorial -->
+<div id="tutorialOverlay" class="overlay-bg" style="display:none;">
+  <div class="overlay-panel" style="max-width: 540px;">
+    <button class="close-btn" id="btnCloseTutorial" title="Tutup">&times;</button>
+    <div class="font-semibold text-base mb-2 text-center">Tutorial Penggunaan Ronda Malam Scheduler</div>
+    <div class="text-sm">
+      <div class="tutorial-step">
+        <b>1. Import Jadwal</b>  
+        <ul class="tutorial-list list-disc pl-5">
+          <li>Gunakan tombol <b>Import TXT/JSON</b> untuk memasukkan jadwal dari file TXT atau JSON.</li>
+          <li>Format TXT dapat dilihat di menu <b>Format TXT</b>.<br>Format JSON hasil ekspor juga didukung.</li>
+        </ul>
+      </div>
+      <div class="tutorial-step">
+        <b>2. Navigasi &amp; Edit Jadwal</b>
+        <ul class="tutorial-list list-disc pl-5">
+          <li>Pilih tanggal menggunakan picker, atau gunakan tombol <b>&lt;</b> dan <b>&gt;</b> untuk berpindah hari.</li>
+          <li>Untuk mengedit jadwal pada tanggal tertentu, klik <b>Edit Baris</b> lalu simpan perubahan.</li>
+        </ul>
+      </div>
+      <div class="tutorial-step">
+        <b>3. Bagikan Jadwal ke WhatsApp</b>
+        <ul class="tutorial-list list-disc pl-5">
+          <li>Gunakan tombol <b>Bagikan WhatsApp</b> untuk membagikan jadwal hari ini ke WhatsApp (personal/grup).</li>
+          <li>Atau klik <b>Copy Text</b> untuk menyalin teks lalu paste ke aplikasi chat lain.</li>
+        </ul>
+      </div>
+      <div class="tutorial-step">
+        <b>4. Export/Backup Jadwal</b>
+        <ul class="tutorial-list list-disc pl-5">
+          <li><b>Export TXT</b>: simpan jadwal dalam format teks mudah dibaca.</li>
+          <li><b>Export JSON</b>: simpan seluruh data untuk backup/restore.</li>
+        </ul>
+      </div>
+      <div class="tutorial-step">
+        <b>5. Lain-lain</b>
+        <ul class="tutorial-list list-disc pl-5">
+          <li><b>Copy Format TXT</b>: salin seluruh jadwal untuk diedit di aplikasi lain (misal Excel).</li>
+          <li><b>Clear Jadwal</b>: hapus seluruh jadwal (permanen).</li>
+          <li><b>Print</b>: cetak jadwal hari ini langsung dari browser.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="mt-2 text-xs text-center text-slate-500">
+      Fitur akan terus dikembangkan sesuai kebutuhan ronda Anda.
     </div>
   </div>
 </div>
@@ -383,6 +479,22 @@ document.getElementById('btnCopyFormatTxt').onclick = function() {
   showToast('Seluruh jadwal dicopy sebagai format TXT!');
 };
 
+// Overlay Tutorial
+document.getElementById('btnShowTutorial').onclick = function() {
+  document.getElementById('tutorialOverlay').style.display = '';
+  document.body.style.overflow = 'hidden';
+};
+document.getElementById('btnCloseTutorial').onclick = function() {
+  document.getElementById('tutorialOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+};
+document.getElementById('tutorialOverlay').onclick = function(e){
+  if(e.target===this){
+    this.style.display='none';
+    document.body.style.overflow = '';
+  }
+};
+
 // Event Listeners
 document.getElementById('datePicker').onchange = function() {
   currentTanggal = this.value;
@@ -395,12 +507,16 @@ document.getElementById('btnNext').onclick = function() { setTanggalNext(1); };
 document.getElementById('btnShareWA').onclick = function() {
   let waText = generateWAOutput();
   if(waText.startsWith('Tidak ada')) { showToast('Tidak ada jadwal hari ini.'); return; }
-  window.open('https://wa.me/?text='+encodeURIComponent(waText), '_blank');
+  // Use WhatsApp Web if on desktop, use native share if on mobile
+  if (navigator.share) {
+    navigator.share({text: waText}).catch(()=>{});
+  } else {
+    window.open('https://wa.me/?text='+encodeURIComponent(waText), '_blank');
+  }
 };
 document.getElementById('btnCopyWA').onclick = function() {
   let waText = generateWAOutput();
-  navigator.clipboard.writeText(waText);
-  showToast('Teks disalin!');
+  navigator.clipboard.writeText(waText).then(()=>showToast('Teks disalin!'));
 };
 document.getElementById('btnPrint').onclick = function(){ window.print(); };
 
@@ -479,7 +595,6 @@ window.onload = function() {
   document.getElementById('datePicker').value = currentTanggal;
   renderPreview(); renderWAOutput();
 };
-
 </script>
 </body>
 </html>
