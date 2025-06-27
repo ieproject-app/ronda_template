@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Ronda Malam Scheduler</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-700 transition-colors" id="mainBody">
+  <div class="max-w-2xl mx-auto mt-4 p-4 bg-white rounded shadow">
+    <div class="flex items-center justify-between mb-2">
+      <h1 class="text-xl font-bold" id="appTitle">Ronda Malam Scheduler</h1>
+      <button id="darkToggle" class="text-xs px-2 py-1 rounded bg-slate-200 hover:bg-slate-300">Dark Mode</button>
+    </div>
+    <form id="settingsForm" class="flex flex-col gap-2 mb-4">
+      <div class="flex flex-wrap gap-2">
+        <label class="flex-1 min-w-[120px]">
+          <span class="block text-xs">Judul</span>
+          <input type="text" id="inputTitle" class="w-full border rounded p-1 text-sm" value="RONDA MALAM KAISAR RESIDENCE">
+        </label>
+        <label class="flex-1 min-w-[100px]">
+          <span class="block text-xs">Jam Shift</span>
+          <input type="text" id="inputJam" class="w-full border rounded p-1 text-sm" value="23.00–04.00 WIB">
+        </label>
+        <label class="flex-1 min-w-[100px]">
+          <span class="block text-xs">Zona Waktu</span>
+          <input type="text" id="inputTz" class="w-full border rounded p-1 text-sm" value="WIB">
+        </label>
+      </div>
+    </form>
+    <div class="flex flex-wrap gap-2 mb-2">
+      <input type="file" id="inputFile" accept=".txt" class="hidden" />
+      <button id="btnImport" class="px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">Import TXT</button>
+      <button id="btnExportTxt" class="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700">Export TXT</button>
+      <button id="btnExportJson" class="px-3 py-1 bg-sky-600 text-white rounded text-xs hover:bg-sky-700">Export JSON</button>
+      <button id="btnClear" class="px-3 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700">Clear Jadwal</button>
+    </div>
+    <div>
+      <textarea id="jadwalText" rows="8" class="w-full border rounded p-2 mb-2 text-sm" placeholder="Paste jadwal.txt di sini..."></textarea>
+      <div class="flex gap-2">
+        <button id="btnParse" class="px-3 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700">Parse & Simpan</button>
+        <button id="btnAddRow" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300">Tambah Baris</button>
+      </div>
+    </div>
+    <div class="my-2">
+      <button id="btnGenerateWA" class="px-4 py-2 bg-yellow-500 text-white font-bold rounded hover:bg-yellow-600 w-full mt-3 text-base">Generate Ronda Malam</button>
+    </div>
+  </div>
+  <!-- Live Preview & CRUD -->
+  <div class="max-w-2xl mx-auto mt-4 p-4 bg-white rounded shadow">
+    <h2 class="text-lg font-semibold mb-2">Preview Jadwal & Edit</h2>
+    <div id="jadwalList" class="flex flex-col gap-2"></div>
+  </div>
+  <!-- Output WhatsApp -->
+  <div class="max-w-2xl mx-auto mt-4 mb-8 p-4 bg-white rounded shadow">
+    <h2 class="text-lg font-semibold mb-2">Output WhatsApp</h2>
+    <div class="mb-2 flex gap-2">
+      <button id="btnShareWA" class="px-3 py-1 bg-green-500 text-white rounded text-xs hover:bg-green-600">Share to WhatsApp</button>
+      <button id="btnCopyWA" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300">Copy Text</button>
+      <button id="btnPrint" class="px-3 py-1 bg-slate-200 rounded text-xs hover:bg-slate-300">Print Jadwal</button>
+    </div>
+    <pre id="waOutput" class="whitespace-pre-wrap bg-slate-100 p-3 rounded text-sm"></pre>
+  </div>
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed left-1/2 bottom-7 px-4 py-2 rounded shadow text-white bg-slate-800 text-sm z-50 transition-all" style="display:none;transform:translateX(-50%);"></div>
+  <script src="app.js"></script>
+</body>
+</html>
