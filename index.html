@@ -10,13 +10,15 @@
   <style>
     html { color-scheme: light dark; }
     body { 
-      transition: background 0.2s, color 0.2s; 
+      transition: background 0.3s, color 0.3s; 
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       background: linear-gradient(135deg, #f0f9ff, #e6f7ff);
+      color: #1e293b;
     }
     
     body.dark {
       background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #e2e8f0;
     }
     
     /* Main Container */
@@ -26,10 +28,13 @@
       border-radius: 16px;
       overflow: hidden;
       background: white;
+      transition: background 0.3s;
     }
     
     body.dark .main-container {
       background: #1e293b;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      border: 1px solid #334155;
     }
     
     @media (min-width:601px) {
@@ -51,6 +56,7 @@
       .rounded { border-radius: 0.6rem !important; }
       table, th, td { font-size: 14px !important; }
       .mobile-padding { padding: 0 1rem; }
+      .header-btn-text { display: none; }
     }
     
     /* Print Styles */
@@ -83,9 +89,9 @@
     }
     
     body.dark .copy-btn { 
-      background: linear-gradient(to bottom, #2d3748, #1a202c);
+      background: linear-gradient(to bottom, #334155, #1e293b);
       color: #e2e8f0;
-      border-color: #4a5568;
+      border-color: #475569;
     }
     
     /* WhatsApp Preview */
@@ -106,9 +112,9 @@
     }
     
     body.dark .wa-preview {
-      background: #17291e;
-      color: #e9ffe2;
-      border-color: #25D366;
+      background: #0d2418;
+      color: #d1f7c4;
+      border-color: #128C7E;
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
     
@@ -132,6 +138,7 @@
       background: #fff;
       border: 1px solid #cbd5e1;
       transition: all 0.2s;
+      color: #1e293b;
     }
     
     .edit-anggota-textarea:focus {
@@ -141,9 +148,9 @@
     }
     
     body.dark .edit-anggota-textarea {
-      background: #232329;
+      background: #1f2937;
       color: #f1f5f9;
-      border-color: #4a5568;
+      border-color: #475569;
     }
     
     .edit-anggota-label {
@@ -155,7 +162,7 @@
     }
     
     body.dark .edit-anggota-label {
-      color: #cbd5e0;
+      color: #cbd5e1;
     }
     
     /* Mobile Action Bar */
@@ -171,7 +178,7 @@
       padding: 1em 1.5em;
       justify-content: space-evenly;
       align-items: center;
-      transition: transform 0.2s;
+      transition: transform 0.3s;
     }
     
     .mobile-action-bar .copy-btn { 
@@ -182,8 +189,8 @@
     }
     
     body.dark .mobile-action-bar { 
-      background: #232329; 
-      border-top-color: #374151;
+      background: #1e293b; 
+      border-top-color: #334155;
     }
     
     /* Tutorial Overlay */
@@ -216,9 +223,10 @@
     }
     
     body.dark .simple-tutorial-panel { 
-      background: #232329; 
-      color: #e7e7e7;
+      background: #1e293b; 
+      color: #e2e8f0;
       box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      border: 1px solid #475569;
     }
     
     .simple-tutorial-panel .close-btn {
@@ -244,7 +252,8 @@
     }
     
     body.dark .simple-tutorial-panel .close-btn:hover {
-      background: #2d3748;
+      background: #334155;
+      color: #60a5fa;
     }
     
     .simple-tutorial-panel ul { 
@@ -256,6 +265,10 @@
     .simple-tutorial-panel li { 
       margin-bottom:0.7em;
       line-height: 1.6;
+    }
+    
+    body.dark .simple-tutorial-panel li {
+      color: #e2e8f0;
     }
     
     /* Toast Notification */
@@ -308,6 +321,12 @@
       transform: translateY(-2px);
     }
     
+    body.dark .btn-secondary {
+      background: linear-gradient(to bottom, #334155, #1e293b);
+      color: #e2e8f0;
+      border-color: #475569;
+    }
+    
     .btn-danger {
       background: linear-gradient(to bottom, #ef4444, #dc2626);
       color: white;
@@ -354,10 +373,12 @@
       background: linear-gradient(to bottom, #f1f5f9, #e2e8f0);
       font-weight: 600;
       text-align: left;
+      color: #334155;
     }
     
     body.dark th {
-      background: linear-gradient(to bottom, #2d3748, #1e293b);
+      background: linear-gradient(to bottom, #334155, #1e293b);
+      color: #e2e8f0;
     }
     
     th, td {
@@ -366,7 +387,7 @@
     }
     
     body.dark th, body.dark td {
-      border-color: #374151;
+      border-color: #334155;
     }
     
     tr:nth-child(even) {
@@ -374,7 +395,7 @@
     }
     
     body.dark tr:nth-child(even) {
-      background-color: #1f2937;
+      background-color: #1e293b;
     }
     
     /* Header Styling */
@@ -383,10 +404,11 @@
       color: white;
       padding: 1.5rem 2rem;
       border-radius: 16px 16px 0 0;
+      position: relative;
     }
     
     body.dark .app-header {
-      background: linear-gradient(to right, #1e3a8a, #3730a3);
+      background: linear-gradient(to right, #1e40af, #3730a3);
     }
     
     /* Tag styling */
@@ -429,7 +451,7 @@
     }
     
     body.dark ::-webkit-scrollbar-thumb {
-      background: #4b5563;
+      background: #475569;
     }
     
     /* Footer */
@@ -441,6 +463,67 @@
     }
     
     body.dark .app-footer {
+      color: #94a3b8;
+    }
+
+    /* Placeholder styling */
+    ::placeholder {
+      color: #94a3b8;
+      opacity: 1;
+    }
+    
+    body.dark ::placeholder {
+      color: #94a3b8;
+    }
+    
+    /* Input styling */
+    input, select, textarea {
+      transition: all 0.3s;
+    }
+    
+    body.dark input, 
+    body.dark select, 
+    body.dark textarea {
+      background: #1f2937;
+      color: #e2e8f0;
+      border-color: #475569;
+    }
+    
+    body.dark input:focus, 
+    body.dark select:focus, 
+    body.dark textarea:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+    
+    /* Header buttons */
+    .header-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .header-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+    
+    /* Not found styling */
+    .not-found {
+      text-align: center;
+      padding: 2rem;
+      color: #64748b;
+    }
+    
+    body.dark .not-found {
       color: #94a3b8;
     }
   </style>
@@ -455,12 +538,17 @@
           <i class="fas fa-shield-alt"></i>
           <span>Ronda Malam Scheduler</span>
         </h1>
-        <p class="text-slate-200 text-sm mt-2">Kelola jadwal ronda dengan mudah dan efisien</p>
+        <p class="text-slate-200 text-sm mt-2 dark:text-slate-300">Kelola jadwal ronda dengan mudah dan efisien</p>
       </div>
       <div class="flex gap-2">
-        <button id="btnShowTutorial" class="no-print px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg font-medium flex items-center gap-2">
+        <!-- Tombol Copy Format dipindahkan ke sini -->
+        <button id="btnCopyFormatTxt" class="header-btn no-print">
+          <i class="fas fa-copy"></i>
+          <span class="header-btn-text">Copy Format</span>
+        </button>
+        <button id="btnShowTutorial" class="header-btn no-print">
           <i class="fas fa-question-circle"></i>
-          <span class="hidden sm:inline">Panduan</span>
+          <span class="header-btn-text">Panduan</span>
         </button>
       </div>
     </div>
@@ -486,15 +574,11 @@
         <i class="fas fa-trash-alt"></i>
         <span>Clear Jadwal</span>
       </button>
-      <button id="btnCopyFormatTxt" class="btn-secondary px-5 py-3 rounded-lg text-sm font-medium flex items-center gap-2">
-        <i class="fas fa-copy"></i>
-        <span>Copy Format</span>
-      </button>
     </div>
 
     <!-- Filter Tim -->
     <div class="flex flex-wrap gap-3 mb-6 no-print justify-center items-center mobile-padding">
-      <label for="filterTeam" class="font-medium text-base mr-2 flex items-center gap-2">
+      <label for="filterTeam" class="font-medium text-base mr-2 flex items-center gap-2 dark:text-slate-300">
         <i class="fas fa-filter"></i>
         <span>Filter Tim:</span>
       </label>
@@ -508,12 +592,12 @@
 
     <!-- Tanggal Picker -->
     <div class="flex flex-col md:flex-row md:items-center gap-4 mb-6 mobile-padding">
-      <label class="font-medium flex-shrink-0 flex items-center gap-2 text-base">
+      <label class="font-medium flex-shrink-0 flex items-center gap-2 text-base dark:text-slate-300">
         <i class="fas fa-calendar-alt"></i>
         <span>Pilih Tanggal:</span>
       </label>
       <div class="flex-1 flex flex-col gap-3">
-        <input type="date" id="datePicker" class="border rounded-lg p-3 text-base w-full bg-white dark:bg-slate-800" />
+        <input type="date" id="datePicker" class="border rounded-lg p-3 text-base w-full bg-white dark:bg-slate-800" placeholder="Pilih tanggal" />
         <div class="flex gap-3">
           <button id="btnPrev" class="btn-secondary flex-1 py-3 rounded-lg font-medium flex items-center justify-center gap-2">
             <i class="fas fa-chevron-left"></i>
@@ -541,13 +625,19 @@
           <tbody id="previewTableBody"></tbody>
         </table>
       </div>
-      <div id="notFound" class="text-center text-slate-400 p-5"></div>
+      <div id="notFound" class="not-found">
+        <div class="py-6">
+          <i class="fas fa-calendar-times text-4xl mb-3 dark:text-slate-500"></i>
+          <p class="text-lg">Tidak ada jadwal ditemukan</p>
+          <p class="text-sm mt-2">Silakan import jadwal atau tambahkan jadwal baru</p>
+        </div>
+      </div>
     </div>
 
     <!-- Edit -->
     <div id="editRowPanel" class="mb-6 hidden rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
       <div class="bg-slate-100 dark:bg-slate-800 p-5">
-        <div class="mb-4 font-bold text-xl flex items-center gap-3">
+        <div class="mb-4 font-bold text-xl flex items-center gap-3 dark:text-slate-200">
           <i class="fas fa-edit"></i>
           <span>Edit Jadwal</span>
         </div>
@@ -559,12 +649,12 @@
           
           <div>
             <label class="edit-anggota-label" for="editTeam">Tim:</label>
-            <input type="text" id="editTeam" class="border rounded-lg p-3 w-full text-base bg-white dark:bg-slate-800" required>
+            <input type="text" id="editTeam" class="border rounded-lg p-3 w-full text-base bg-white dark:bg-slate-800" required placeholder="Nama tim">
           </div>
           
           <div>
             <label class="edit-anggota-label" for="editAnggota">Anggota (satu per baris):</label>
-            <textarea id="editAnggota" class="edit-anggota-textarea" required></textarea>
+            <textarea id="editAnggota" class="edit-anggota-textarea" required placeholder="Nama anggota 1&#10;Nama anggota 2&#10;Nama anggota 3"></textarea>
           </div>
           
           <div class="flex gap-3 mt-3">
@@ -608,20 +698,20 @@
     <button class="close-btn" id="btnCloseTutorial" title="Tutup">
       <i class="fas fa-times"></i>
     </button>
-    <div class="font-bold text-2xl mb-4 text-center flex items-center justify-center gap-3">
+    <div class="font-bold text-2xl mb-4 text-center flex items-center justify-center gap-3 dark:text-white">
       <i class="fas fa-book-open"></i>
       <span>Panduan Penggunaan</span>
     </div>
     <ul class="mb-4">
-      <li><span class="font-semibold text-blue-600">Import Jadwal</span> - Gunakan tombol <b>Import Data</b> untuk mengimpor jadwal dari file TXT/JSON.</li>
-      <li><span class="font-semibold text-blue-600">Filter Jadwal</span> - Gunakan dropdown <b>Filter Tim</b> untuk melihat jadwal tim tertentu.</li>
-      <li><span class="font-semibold text-blue-600">Navigasi Tanggal</span> - Gunakan kalender atau tombol navigasi untuk berpindah tanggal.</li>
-      <li><span class="font-semibold text-blue-600">Edit Jadwal</span> - Klik tombol <b>Edit</b> untuk mengubah jadwal tim tertentu.</li>
-      <li><span class="font-semibold text-blue-600">Bagikan Jadwal</span> - Gunakan tombol <b>Copy Teks</b> untuk membagikan jadwal ke WhatsApp.</li>
-      <li><span class="font-semibold text-blue-600">Backup Data</span> - Gunakan tombol <b>Export TXT/JSON</b> untuk menyimpan cadangan jadwal.</li>
-      <li><span class="font-semibold text-blue-600">Reset Jadwal</span> - Gunakan tombol <b>Clear Jadwal</b> untuk menghapus semua data.</li>
+      <li><span class="font-semibold text-blue-600 dark:text-blue-400">Import Jadwal</span> - Gunakan tombol <b>Import Data</b> untuk mengimpor jadwal dari file TXT/JSON.</li>
+      <li><span class="font-semibold text-blue-600 dark:text-blue-400">Filter Jadwal</span> - Gunakan dropdown <b>Filter Tim</b> untuk melihat jadwal tim tertentu.</li>
+      <li><span class="font-semibold text-blue-600 dark:text-blue-400">Navigasi Tanggal</span> - Gunakan kalender atau tombol navigasi untuk berpindah tanggal.</li>
+      <li><span class="font-semibold text-blue-600 dark:text-blue-400">Edit Jadwal</span> - Klik tombol <b>Edit</b> untuk mengubah jadwal tim tertentu.</li>
+      <li><span class="font-semibold text-blue-600 dark:text-blue-400">Bagikan Jadwal</span> - Gunakan tombol <b>Copy Teks</b> untuk membagikan jadwal ke WhatsApp.</li>
+      <li><span class="font-semibold text-blue-600 dark:text-blue-400">Backup Data</span> - Gunakan tombol <b>Export TXT/JSON</b> untuk menyimpan cadangan jadwal.</li>
+      <li><span class="font-semibold text-blue-600 dark:text-blue-400">Reset Jadwal</span> - Gunakan tombol <b>Clear Jadwal</b> untuk menghapus semua data.</li>
     </ul>
-    <div class="text-sm text-center text-slate-500 mt-4">
+    <div class="text-sm text-center text-slate-500 dark:text-slate-400 mt-4">
       <i class="fas fa-lightbulb mr-2"></i>
       Fitur akan terus dikembangkan sesuai kebutuhan ronda Anda.
     </div>
@@ -787,28 +877,26 @@ function renderPreview() {
   const tbody = document.getElementById('previewTableBody');
   const notFound = document.getElementById('notFound');
   tbody.innerHTML = '';
-  notFound.textContent = '';
   let filtered = getFilteredJadwal();
   let idx = filtered.findIndex(j=>j.date===currentTanggal);
+  
   if(idx===-1) {
     if(filtered.length>0) {
       currentTanggal = filtered[0].date;
       idx = 0;
     } else {
-      notFound.innerHTML = `<div class="py-6 text-slate-500">
-        <i class="fas fa-calendar-times text-4xl mb-3"></i>
-        <p class="text-lg">Tidak ada jadwal ditemukan</p>
-        <p class="text-sm mt-2">Silakan import jadwal atau tambahkan jadwal baru</p>
-      </div>`;
+      notFound.style.display = 'block';
       toggleMobileActionBar(false);
       toggleBtnDesktopWA(false);
       return;
     }
   }
+  
+  notFound.style.display = 'none';
   let j = filtered[idx];
   let tr = document.createElement('tr');
   tr.innerHTML = `
-    <td class="p-4 font-medium">${formatTanggalLong(j.date)}</td>
+    <td class="p-4 font-medium dark:text-slate-200">${formatTanggalLong(j.date)}</td>
     <td class="p-4 font-semibold text-blue-600 dark:text-blue-400">${j.team}</td>
     <td class="p-4">${j.members.map(m=>`<span class="member-tag">${m}</span>`).join('')}</td>
   `;
