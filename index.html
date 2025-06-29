@@ -1,1043 +1,1175 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Siskamling Maestro</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+  <title>Ronda Malam Scheduler</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta name="color-scheme" content="dark light">
   <style>
-    :root {
-      --primary: #3b82f6;
-      --primary-dark: #2563eb;
-      --secondary: #64748b;
-      --success: #22c55e;
-      --danger: #ef4444;
-      --card: #f8fafc;
-      --text: #1e293b;
-      --border: #e2e8f0;
-    }
-    
-    .dark {
-      --primary: #60a5fa;
-      --primary-dark: #3b82f6;
-      --secondary: #94a3b8;
-      --card: #1e293b;
-      --text: #f1f5f9;
-      --border: #334155;
-    }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background-color: #f1f5f9;
-      color: var(--text);
-      line-height: 1.6;
-      padding: 20px;
-      transition: background-color 0.3s, color 0.3s;
+    html { color-scheme: light dark; }
+    body { 
+      transition: background 0.2s, color 0.2s; 
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #f0f9ff, #e6f7ff);
     }
     
     body.dark {
-      background-color: #0f172a;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
     }
     
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
+    /* Main Container */
+    .main-container { 
+      padding-bottom: 96px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border-radius: 16px;
+      overflow: hidden;
+      background: white;
     }
     
-    /* Header */
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-      padding: 20px;
+    body.dark .main-container {
+      background: #1e293b;
     }
     
-    .header h1 {
-      font-size: 2.2rem;
-      color: var(--primary-dark);
-      margin-bottom: 8px;
-      font-weight: 700;
+    @media (min-width:601px) {
+      .main-container { 
+        padding-bottom: 0 !important;
+        margin: 2rem auto;
+      }
     }
     
-    .header p {
-      font-size: 1.1rem;
-      color: var(--secondary);
-      max-width: 600px;
-      margin: 0 auto;
+    /* Mobile Optimization */
+    @media (max-width:600px) {
+      .max-w-3xl { max-width: 100vw !important; }
+      .main-container { 
+        padding-bottom: 96px !important; 
+        margin: 0;
+        border-radius: 0;
+      }
+      .p-4, .p-3 { padding: 1rem !important; }
+      .rounded { border-radius: 0.6rem !important; }
+      table, th, td { font-size: 14px !important; }
+      .mobile-padding { padding: 0 1rem; }
     }
     
-    .divider {
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--primary), transparent);
-      margin: 25px 0;
-      border-radius: 2px;
+    /* Print Styles */
+    @media print {
+      .no-print, .mobile-action-bar { display:none !important;}
+      .main-container { padding-bottom: 0 !important; }
     }
     
-    /* Card */
-    .card {
-      background: var(--card);
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      padding: 24px;
-      margin-bottom: 24px;
-      border: 1px solid var(--border);
-    }
-    
-    .card-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: var(--primary);
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .card-title i {
-      font-size: 1.4rem;
-    }
-    
-    /* Buttons */
-    .btn {
+    /* UI Components */
+    .copy-btn {
+      background: linear-gradient(to bottom, #f8fafc, #e2e8f0);
+      border: 1px solid #cbd5e1;
+      padding: 0.5em 1.2em;
+      font-size: 0.95em;
+      border-radius: 0.5em;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.17s;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 10px 18px;
-      border-radius: 8px;
+      gap: 0.5rem;
       font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border: none;
-      min-width: 140px;
-      text-align: center;
-      background: var(--primary);
-      color: white;
-      font-size: 1rem;
     }
     
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      background: var(--primary-dark);
+    .copy-btn:hover { 
+      background: linear-gradient(to bottom, #e2e8f0, #cbd5e1); 
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     
-    .btn-success {
-      background: #22c55e;
-    }
-    
-    .btn-success:hover {
-      background: #16a34a;
-    }
-    
-    .btn-info {
-      background: #0ea5e9;
-    }
-    
-    .btn-info:hover {
-      background: #0284c7;
-    }
-    
-    .btn-danger {
-      background: #ef4444;
-    }
-    
-    .btn-danger:hover {
-      background: #dc2626;
-    }
-    
-    .btn-secondary {
-      background: #94a3b8;
-    }
-    
-    .btn-secondary:hover {
-      background: #64748b;
-    }
-    
-    .btn-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: center;
-      margin-bottom: 8px;
-    }
-    
-    /* Form Elements */
-    .form-group {
-      margin-bottom: 18px;
-    }
-    
-    .form-group label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 500;
-      color: var(--text);
-    }
-    
-    .form-control {
-      width: 100%;
-      padding: 10px 14px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      font-size: 1rem;
-    }
-    
-    /* Table */
-    .schedule-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    
-    .schedule-table th {
-      background: var(--primary);
-      color: white;
-      padding: 12px 16px;
-      text-align: left;
-      font-weight: 600;
-    }
-    
-    .schedule-table td {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-    }
-    
-    .team-name {
-      font-weight: 600;
-      color: var(--primary-dark);
-    }
-    
-    .member-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 6px;
-    }
-    
-    .member-tag {
-      background: #dbeafe;
-      color: var(--primary-dark);
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-    }
-    
-    .dark .member-tag {
-      background: #1e3a8a;
-      color: #dbeafe;
+    body.dark .copy-btn { 
+      background: linear-gradient(to bottom, #2d3748, #1a202c);
+      color: #e2e8f0;
+      border-color: #4a5568;
     }
     
     /* WhatsApp Preview */
     .wa-preview {
-      background: #f0fdf4;
-      color: #166534;
-      border: 1px solid #22c55e;
+      background: #f7fdf9;
+      color: #2d4736;
+      border: 1px solid #25D366;
       border-radius: 12px;
-      padding: 20px;
-      margin-top: 20px;
-      line-height: 1.7;
+      font-size: 1.05em;
+      line-height: 1.65;
+      padding: 1.2em 1.4em;
+      margin-bottom: 0.5em;
+      min-height: 150px;
+      word-break: break-word;
+      letter-spacing: 0.01em;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
       white-space: pre-wrap;
-      font-size: 1.05rem;
     }
     
-    .dark .wa-preview {
-      background: #052e16;
-      color: #bbf7d0;
-      border-color: #22c55e;
+    body.dark .wa-preview {
+      background: #17291e;
+      color: #e9ffe2;
+      border-color: #25D366;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
     
-    .wa-actions {
+    /* Button Group */
+    .wa-btn-group {
       display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 20px;
+      gap: 0.7em;
+      justify-content: flex-end;
+      margin-bottom: 1em;
+    }
+    
+    /* Form Elements */
+    .edit-anggota-textarea {
+      min-height: 120px;
+      resize: vertical;
+      font-family: inherit;
+      font-size: 1em;
+      padding: 0.9em !important;
+      width: 100%;
+      border-radius: 0.6em;
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      transition: all 0.2s;
+    }
+    
+    .edit-anggota-textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+    
+    body.dark .edit-anggota-textarea {
+      background: #232329;
+      color: #f1f5f9;
+      border-color: #4a5568;
+    }
+    
+    .edit-anggota-label {
+      font-size: 1em;
+      font-weight: 500;
+      margin-bottom: 0.5em;
+      display: block;
+      color: #4b5563;
+    }
+    
+    body.dark .edit-anggota-label {
+      color: #cbd5e0;
     }
     
     /* Mobile Action Bar */
     .mobile-action-bar {
       position: fixed;
-      left: 0; 
-      right: 0; 
-      bottom: 0;
-      z-index: 100;
-      background: var(--card);
-      border-top: 1px solid var(--border);
+      left: 0; right: 0; bottom: 0;
+      z-index: 1100;
+      background: #fff;
+      border-top: 1px solid #e5e7eb;
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
       display: flex;
-      gap: 12px;
-      padding: 14px 20px;
-      justify-content: center;
+      gap: 1em;
+      padding: 1em 1.5em;
+      justify-content: space-evenly;
       align-items: center;
-      display: none;
+      transition: transform 0.2s;
     }
     
-    /* Toast */
-    .toast {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 12px 20px;
-      border-radius: 8px;
-      background: var(--primary);
-      color: white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .mobile-action-bar .copy-btn { 
+      flex:1; 
+      min-width:0; 
+      padding: 0.8em;
+      font-size: 1.05em;
+    }
+    
+    body.dark .mobile-action-bar { 
+      background: #232329; 
+      border-top-color: #374151;
+    }
+    
+    /* Tutorial Overlay */
+    .simple-tutorial-bg {
+      background: rgba(0,0,0,.7);
+      position: fixed; 
       z-index: 1000;
-      opacity: 0;
-      transition: opacity 0.3s;
+      left:0; top:0; width:100vw; height:100vh;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity .25s;
+      backdrop-filter: blur(4px);
     }
     
-    .toast.show {
-      opacity: 1;
+    .simple-tutorial-panel {
+      background: #fff;
+      max-width: 90vw;
+      width: 400px;
+      border-radius: 16px;
+      padding: 1.8em 2em;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+      color: #334155;
+      position: relative;
+      font-size: 16px;
+      animation: fadeInOverlay .4s;
     }
     
-    /* Theme Toggle */
-    .theme-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      width: 50px;
-      height: 26px;
-      background: var(--secondary);
-      border-radius: 13px;
+    @keyframes fadeInOverlay {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    body.dark .simple-tutorial-panel { 
+      background: #232329; 
+      color: #e7e7e7;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    }
+    
+    .simple-tutorial-panel .close-btn {
+      position: absolute;
+      right: 1.4em; top: 1.4em;
+      font-size: 1.4em;
+      color: #94a3b8;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
-      padding: 2px;
-      cursor: pointer;
-      z-index: 100;
+      justify-content: center;
     }
     
-    .theme-toggle .toggle-handle {
-      width: 22px;
-      height: 22px;
-      background: white;
-      border-radius: 50%;
-      transition: transform 0.3s;
+    .simple-tutorial-panel .close-btn:hover { 
+      color: #3b82f6; 
+      background: #f1f5f9;
     }
     
-    .dark .theme-toggle .toggle-handle {
-      transform: translateX(24px);
+    body.dark .simple-tutorial-panel .close-btn:hover {
+      background: #2d3748;
     }
     
-    /* Responsive */
-    @media (max-width: 768px) {
-      .header h1 {
-        font-size: 1.8rem;
-      }
-      
-      .header p {
-        font-size: 1rem;
-      }
-      
-      .btn {
-        min-width: 100%;
-      }
-      
-      .wa-actions {
-        flex-direction: column;
-      }
-      
-      .mobile-action-bar {
-        display: flex;
-      }
+    .simple-tutorial-panel ul { 
+      margin-top:1em; 
+      margin-bottom:1em; 
+      padding-left: 1.5em;
+    }
+    
+    .simple-tutorial-panel li { 
+      margin-bottom:0.7em;
+      line-height: 1.6;
+    }
+    
+    /* Toast Notification */
+    #toast {
+      position: fixed;
+      left: 50%;
+      bottom: 100px;
+      padding: 0.9rem 1.8rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      text-align: center;
+      z-index: 2000;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: #3b82f6;
+      color: white;
+    }
+    
+    body.dark #toast {
+      background: #1e40af;
+    }
+    
+    /* Utility Classes */
+    .btn-primary {
+      background: linear-gradient(to bottom, #3b82f6, #2563eb);
+      color: white;
+      border: none;
+      font-weight: 600;
+      transition: all 0.2s;
+      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(to bottom, #2563eb, #1d4ed8);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4);
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(to bottom, #f1f5f9, #e2e8f0);
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    
+    .btn-secondary:hover {
+      background: linear-gradient(to bottom, #e2e8f0, #cbd5e1);
+      transform: translateY(-2px);
+    }
+    
+    .btn-danger {
+      background: linear-gradient(to bottom, #ef4444, #dc2626);
+      color: white;
+      box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+    }
+    
+    .btn-danger:hover {
+      background: linear-gradient(to bottom, #dc2626, #b91c1c);
+      transform: translateY(-2px);
+    }
+    
+    .btn-success {
+      background: linear-gradient(to bottom, #22c55e, #16a34a);
+      color: white;
+      box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3);
+    }
+    
+    .btn-success:hover {
+      background: linear-gradient(to bottom, #16a34a, #15803d);
+      transform: translateY(-2px);
+    }
+    
+    .btn-info {
+      background: linear-gradient(to bottom, #0ea5e9, #0284c7);
+      color: white;
+      box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+    }
+    
+    .btn-info:hover {
+      background: linear-gradient(to bottom, #0284c7, #0369a1);
+      transform: translateY(-2px);
+    }
+    
+    /* Table Styling */
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+    
+    th {
+      background: linear-gradient(to bottom, #f1f5f9, #e2e8f0);
+      font-weight: 600;
+      text-align: left;
+    }
+    
+    body.dark th {
+      background: linear-gradient(to bottom, #2d3748, #1e293b);
+    }
+    
+    th, td {
+      padding: 1rem 1.2rem;
+      border: 1px solid #e2e8f0;
+    }
+    
+    body.dark th, body.dark td {
+      border-color: #374151;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+    
+    body.dark tr:nth-child(even) {
+      background-color: #1f2937;
+    }
+    
+    /* Header Styling */
+    .app-header {
+      background: linear-gradient(to right, #3b82f6, #6366f1);
+      color: white;
+      padding: 1.5rem 2rem;
+      border-radius: 16px 16px 0 0;
+    }
+    
+    body.dark .app-header {
+      background: linear-gradient(to right, #1e3a8a, #3730a3);
+    }
+    
+    /* Tag styling */
+    .member-tag {
+      display: inline-flex;
+      align-items: center;
+      background: #dbeafe;
+      color: #1d4ed8;
+      border-radius: 0.5rem;
+      padding: 0.4rem 0.9rem;
+      margin: 0.3rem;
+      font-size: 0.95em;
+      font-weight: 500;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    body.dark .member-tag {
+      background: #1e3a8a;
+      color: #dbeafe;
+    }
+    
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    
+    body.dark ::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+    
+    body.dark ::-webkit-scrollbar-thumb {
+      background: #4b5563;
+    }
+    
+    /* Footer */
+    .app-footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9em;
+      color: #64748b;
+    }
+    
+    body.dark .app-footer {
+      color: #94a3b8;
     }
   </style>
 </head>
-<body>
-  <div class="theme-toggle" id="themeToggle">
-    <div class="toggle-handle"></div>
+<body class="bg-slate-50 min-h-screen text-slate-800 font-sans" id="mainBody">
+
+<div class="main-container max-w-3xl w-full mx-auto bg-white dark:bg-slate-800 rounded-xl">
+  <div class="app-header">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-bold text-white flex items-center gap-3">
+          <i class="fas fa-shield-alt"></i>
+          <span>Ronda Malam Scheduler</span>
+        </h1>
+        <p class="text-slate-200 text-sm mt-2">Kelola jadwal ronda dengan mudah dan efisien</p>
+      </div>
+      <div class="flex gap-2">
+        <button id="btnShowTutorial" class="no-print px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg font-medium flex items-center gap-2">
+          <i class="fas fa-question-circle"></i>
+          <span class="hidden sm:inline">Panduan</span>
+        </button>
+      </div>
+    </div>
   </div>
-  
-  <div class="container">
-    <header class="header">
-      <h1>Siskamling Maestro</h1>
-      <p>Kelola jadwal ronda dengan mudah dan efisien</p>
-    </header>
-    
-    <div class="divider"></div>
-    
-    <div class="card">
-      <div class="card-title">
-        <i class="fas fa-file-import"></i>
-        <span>Manajemen Data</span>
-      </div>
-      
-      <div class="btn-group">
-        <button id="btnImport" class="btn">
-          <i class="fas fa-file-import"></i>
-          Import Data
-        </button>
-        <button id="btnExportTxt" class="btn btn-success">
-          <i class="fas fa-file-export"></i>
-          Export TXT
-        </button>
-        <button id="btnExportJson" class="btn btn-info">
-          <i class="fas fa-file-code"></i>
-          Export JSON
-        </button>
-        <button id="btnClear" class="btn btn-danger">
-          <i class="fas fa-trash-alt"></i>
-          Clear Jadwal
-        </button>
-        <button id="btnCopyFormatTxt" class="btn btn-secondary">
-          <i class="fas fa-copy"></i>
-          Copy Format
-        </button>
-      </div>
-      
+
+  <div class="p-5 md:p-7">
+    <!-- Import / Export -->
+    <div class="flex flex-wrap gap-3 mb-6 no-print justify-center">
       <input type="file" id="inputFile" accept=".txt,.json" class="hidden" />
+      <button id="btnImport" class="btn-primary px-5 py-3 rounded-lg text-sm font-medium flex items-center gap-2">
+        <i class="fas fa-file-import"></i>
+        <span>Import Data</span>
+      </button>
+      <button id="btnExportTxt" class="btn-success px-5 py-3 rounded-lg text-sm font-medium flex items-center gap-2">
+        <i class="fas fa-file-export"></i>
+        <span>Export TXT</span>
+      </button>
+      <button id="btnExportJson" class="btn-info px-5 py-3 rounded-lg text-sm font-medium flex items-center gap-2">
+        <i class="fas fa-file-code"></i>
+        <span>Export JSON</span>
+      </button>
+      <button id="btnClear" class="btn-danger px-5 py-3 rounded-lg text-sm font-medium flex items-center gap-2">
+        <i class="fas fa-trash-alt"></i>
+        <span>Clear Jadwal</span>
+      </button>
+      <button id="btnCopyFormatTxt" class="btn-secondary px-5 py-3 rounded-lg text-sm font-medium flex items-center gap-2">
+        <i class="fas fa-copy"></i>
+        <span>Copy Format</span>
+      </button>
     </div>
-    
-    <div class="card">
-      <div class="card-title">
+
+    <!-- Filter Tim -->
+    <div class="flex flex-wrap gap-3 mb-6 no-print justify-center items-center mobile-padding">
+      <label for="filterTeam" class="font-medium text-base mr-2 flex items-center gap-2">
         <i class="fas fa-filter"></i>
-        <span>Filter Jadwal</span>
-      </div>
-      
-      <div class="form-group">
-        <label for="filterTeam">Filter Tim</label>
-        <select id="filterTeam" class="form-control">
-          <option value="">Semua Tim</option>
-          <!-- Options will be populated by JS -->
-        </select>
-      </div>
-      
-      <div class="form-group">
-        <label for="datePicker">Pilih Tanggal</label>
-        <input type="date" id="datePicker" class="form-control" />
-      </div>
-      
-      <div class="btn-group">
-        <button id="btnPrev" class="btn">
-          <i class="fas fa-chevron-left"></i>
-          Sebelumnya
-        </button>
-        <button id="btnNext" class="btn">
-          Selanjutnya
-          <i class="fas fa-chevron-right"></i>
-        </button>
+        <span>Filter Tim:</span>
+      </label>
+      <select id="filterTeam" class="border rounded-lg px-4 py-2.5 text-base w-full max-w-xs bg-white dark:bg-slate-800">
+        <option value="">Semua Tim</option>
+      </select>
+      <button id="btnResetFilter" class="btn-secondary px-4 py-2.5 rounded-lg text-sm hover:bg-slate-200 font-medium flex items-center" type="button">
+        <i class="fas fa-sync-alt"></i>
+      </button>
+    </div>
+
+    <!-- Tanggal Picker -->
+    <div class="flex flex-col md:flex-row md:items-center gap-4 mb-6 mobile-padding">
+      <label class="font-medium flex-shrink-0 flex items-center gap-2 text-base">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Pilih Tanggal:</span>
+      </label>
+      <div class="flex-1 flex flex-col gap-3">
+        <input type="date" id="datePicker" class="border rounded-lg p-3 text-base w-full bg-white dark:bg-slate-800" />
+        <div class="flex gap-3">
+          <button id="btnPrev" class="btn-secondary flex-1 py-3 rounded-lg font-medium flex items-center justify-center gap-2">
+            <i class="fas fa-chevron-left"></i>
+            <span class="hidden sm:inline">Sebelumnya</span>
+          </button>
+          <button id="btnNext" class="btn-secondary flex-1 py-3 rounded-lg font-medium flex items-center justify-center gap-2">
+            <span class="hidden sm:inline">Selanjutnya</span>
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
       </div>
     </div>
-    
-    <div class="card">
-      <div class="card-title">
-        <i class="fas fa-calendar-alt"></i>
-        <span>Jadwal Ronda</span>
-      </div>
-      
-      <div id="previewContainer">
-        <table class="schedule-table">
+
+    <!-- Preview Tabel -->
+    <div id="previewContainer" class="mb-6 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700">
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
           <thead>
             <tr>
-              <th>Tanggal</th>
-              <th>Tim</th>
-              <th>Anggota</th>
+              <th class="p-4">Tanggal</th>
+              <th class="p-4">Tim</th>
+              <th class="p-4">Anggota</th>
             </tr>
           </thead>
-          <tbody id="previewTableBody">
-            <!-- Content will be populated by JS -->
-          </tbody>
+          <tbody id="previewTableBody"></tbody>
         </table>
-        <div id="notFound"></div>
       </div>
+      <div id="notFound" class="text-center text-slate-400 p-5"></div>
     </div>
-    
-    <div class="card" id="editRowPanel" style="display: none;">
-      <div class="card-title">
-        <i class="fas fa-edit"></i>
-        <span>Edit Jadwal</span>
-      </div>
-      
-      <form id="editForm">
-        <div class="form-group">
-          <label for="editTanggal">Tanggal</label>
-          <input type="date" id="editTanggal" class="form-control" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="editTeam">Tim</label>
-          <input type="text" id="editTeam" class="form-control" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="editAnggota">Anggota (satu per baris)</label>
-          <textarea id="editAnggota" class="form-control" rows="4" required></textarea>
-        </div>
-        
-        <div class="btn-group">
-          <button type="submit" class="btn">
-            <i class="fas fa-save"></i>
-            Simpan
-          </button>
-          <button type="button" id="btnCancelEdit" class="btn btn-secondary">
-            <i class="fas fa-times"></i>
-            Batal
-          </button>
-        </div>
-      </form>
-    </div>
-    
-    <div class="card">
-      <div class="card-title">
-        <i class="fab fa-whatsapp"></i>
-        <span>Preview Pengumuman WhatsApp</span>
-      </div>
-      
-      <div class="wa-actions" id="waBtnDesktop">
-        <button id="btnCopyWA" class="btn btn-success">
-          <i class="fas fa-copy"></i>
-          Copy Teks
-        </button>
-        <button id="btnEditRow" class="btn">
+
+    <!-- Edit -->
+    <div id="editRowPanel" class="mb-6 hidden rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div class="bg-slate-100 dark:bg-slate-800 p-5">
+        <div class="mb-4 font-bold text-xl flex items-center gap-3">
           <i class="fas fa-edit"></i>
-          Edit
+          <span>Edit Jadwal</span>
+        </div>
+        <form id="editForm" class="flex flex-col gap-4">
+          <div>
+            <label class="edit-anggota-label" for="editTanggal">Tanggal:</label>
+            <input type="date" id="editTanggal" class="border rounded-lg p-3 w-full text-base bg-white dark:bg-slate-800" required>
+          </div>
+          
+          <div>
+            <label class="edit-anggota-label" for="editTeam">Tim:</label>
+            <input type="text" id="editTeam" class="border rounded-lg p-3 w-full text-base bg-white dark:bg-slate-800" required>
+          </div>
+          
+          <div>
+            <label class="edit-anggota-label" for="editAnggota">Anggota (satu per baris):</label>
+            <textarea id="editAnggota" class="edit-anggota-textarea" required></textarea>
+          </div>
+          
+          <div class="flex gap-3 mt-3">
+            <button class="btn-primary px-5 py-3 rounded-lg font-medium flex-1 flex items-center justify-center gap-3" type="submit">
+              <i class="fas fa-save"></i>
+              <span>Simpan</span>
+            </button>
+            <button id="btnCancelEdit" class="btn-secondary px-5 py-3 rounded-lg font-medium flex-1 flex items-center justify-center gap-3" type="button">
+              <i class="fas fa-times"></i>
+              <span>Batal</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- WhatsApp Output -->
+    <div class="mt-5 mb-4 bg-slate-100 dark:bg-slate-800 rounded-xl p-5 border border-slate-200 dark:border-slate-700">
+      <div class="wa-btn-group no-print" id="waBtnDesktop">
+        <button id="btnCopyWA" class="copy-btn">
+          <i class="fas fa-copy"></i>
+          <span>Copy Teks</span>
+        </button>
+        <button id="btnEditRow" class="copy-btn">
+          <i class="fas fa-edit"></i>
+          <span>Edit Baris</span>
         </button>
       </div>
-      
-      <div id="waOutput" class="wa-preview">
-        <!-- WhatsApp preview will be populated by JS -->
-      </div>
-    </div>
-    
-    <div class="mobile-action-bar">
-      <button id="btnCopyWAMobile" class="btn btn-success">
-        <i class="fas fa-copy"></i>
-        Copy Teks
-      </button>
-      <button id="btnEditRowMobile" class="btn">
-        <i class="fas fa-edit"></i>
-        Edit
-      </button>
+      <div id="waOutput" class="wa-preview"></div>
     </div>
   </div>
-
-  <div class="toast" id="toast">
-    <i class="fas fa-check-circle"></i>
-    <span id="toastMessage"></span>
+  
+  <div class="app-footer no-print">
+    <p>Ronda Malam Scheduler &copy; 2023 - Jaga keamanan lingkungan bersama</p>
   </div>
+</div>
 
-  <script>
-    // Data and State Management
-    let jadwalArr = [];
-    let currentTanggal = null;
-    let editIdx = null;
-    let currentFilterTeam = "";
-    const STORAGE_KEY = "ronda_jadwal_v5";
-    const randomKata2 = [
-      "Keamanan Kita Prioritas!",
-      "Utamakan Siskamling, Nyaman Bersama!",
-      "Bersama, Lingkungan Aman Nyaman!",
-      "Jaga Lingkungan, Jaga Keluarga!",
-      "Bersatu Menjaga, Damai Dirasa!",
-      "Ronda untuk Harmoni Bersama!",
-      "Bersatu Menjaga, Damai Dirasa!",
-      "Bersama kita lebih kuat!",
-      "Ronda Malam, Wujud Peduli!",
-      "Ayo Jaga Malam, Demi Kenyamanan!",
-      "Bersatu menjaga, bersama menyelematkan.",
-      "Sinar sentermu cahaya harapan di malam kelam.",
-      "Keberanianmu malam ini adalah ketenangan esok hari.",
-      "Ronda bukan tugas, tapi wujud cinta pada lingkungan.",
-      "Langkahmu tegap, keamanan pun terjaga.",
-      "Di sela senyap malam, keberanianmu berbicara.",
-      "Jagalah lingkar keamanan dengan hati penuh tanggung jawab.",
-      "Setiap putaran ronda adalah wujud kepedulian.",
-      "Kita ronda, agar semua bisa tidur nyenyak.",
-      "Bersama kita kuat, sendiri kita rentan.",
-      "Heningnya malam butuh keberanianmu.",
-      "Satu senter, sejuta rasa aman.",
-      "Ronda pagi—kemenangan kecil bagi hati besar.",
-      "Tangan di senter, mata di lingkungan.",
-      "Langkah berjaga, cermin solidaritas.",
-      "Keamananmu pijar bagi kita semua.",
-      "Jaga malam, jaga persaudaraan.",
-      "Malam gelap, hati terang.",
-      "Satu komando: aman dan damai!",
-      "Ronda: rutinitas yang memberi arti.",
-      "Jadilah lentera kecil di kegelapan.",
-      "Semangat ronda, semangat kebersamaan.",
-      "Kesiagaanmu malam ini adalah senyum esok hari.",
-      "Ronda: aksi nyata, bukan lip service.",
-      "Malam mungkin panjang, tapi solidaritas lebih panjang.",
-      "Keberanianmu, keamanan warga.",
-      "Langkahmu malam ini memberi harapan.",
-      "Ronda: walau sunyi, kita tak sendiri.",
-      "Pasang senter, pancarkan rasa aman.",
-      "Setiap putaran, setiap jiwa terlindungi.",
-      "Ronda hari ini, damai esok hari."
-    ];
+<!-- Overlay Tutorial Simple -->
+<div id="tutorialOverlay" class="simple-tutorial-bg" style="display:none;">
+  <div class="simple-tutorial-panel">
+    <button class="close-btn" id="btnCloseTutorial" title="Tutup">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="font-bold text-2xl mb-4 text-center flex items-center justify-center gap-3">
+      <i class="fas fa-book-open"></i>
+      <span>Panduan Penggunaan</span>
+    </div>
+    <ul class="mb-4">
+      <li><span class="font-semibold text-blue-600">Import Jadwal</span> - Gunakan tombol <b>Import Data</b> untuk mengimpor jadwal dari file TXT/JSON.</li>
+      <li><span class="font-semibold text-blue-600">Filter Jadwal</span> - Gunakan dropdown <b>Filter Tim</b> untuk melihat jadwal tim tertentu.</li>
+      <li><span class="font-semibold text-blue-600">Navigasi Tanggal</span> - Gunakan kalender atau tombol navigasi untuk berpindah tanggal.</li>
+      <li><span class="font-semibold text-blue-600">Edit Jadwal</span> - Klik tombol <b>Edit</b> untuk mengubah jadwal tim tertentu.</li>
+      <li><span class="font-semibold text-blue-600">Bagikan Jadwal</span> - Gunakan tombol <b>Copy Teks</b> untuk membagikan jadwal ke WhatsApp.</li>
+      <li><span class="font-semibold text-blue-600">Backup Data</span> - Gunakan tombol <b>Export TXT/JSON</b> untuk menyimpan cadangan jadwal.</li>
+      <li><span class="font-semibold text-blue-600">Reset Jadwal</span> - Gunakan tombol <b>Clear Jadwal</b> untuk menghapus semua data.</li>
+    </ul>
+    <div class="text-sm text-center text-slate-500 mt-4">
+      <i class="fas fa-lightbulb mr-2"></i>
+      Fitur akan terus dikembangkan sesuai kebutuhan ronda Anda.
+    </div>
+  </div>
+</div>
 
-    // Utility Functions
-    function showToast(message, duration = 3000) {
-      const toast = document.getElementById('toast');
-      const toastMessage = document.getElementById('toastMessage');
-      
-      toastMessage.textContent = message;
-      toast.classList.add('show');
-      
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, duration);
-    }
+<div id="mobileActionBar" class="mobile-action-bar no-print" style="display:none;">
+  <button id="btnCopyWAMobile" class="copy-btn">
+    <i class="fas fa-copy mr-2"></i>
+    <span>Copy Teks</span>
+  </button>
+  <button id="btnEditRowMobile" class="copy-btn">
+    <i class="fas fa-edit mr-2"></i>
+    <span>Edit</span>
+  </button>
+</div>
 
-    function pad(n) { return n < 10 ? '0' + n : n; }
-    
-    function formatTanggalLong(iso) {
-      const hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-      const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-      let d = new Date(iso);
-      if (isNaN(d)) return iso;
-      return `${hari[d.getDay()]}, ${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
-    }
-    
-    function parseTanggalToISO(s) {
-      s = s.trim().replace(/^[A-Za-z]+,\s*/, '');
-      let [tgl, bln, th] = s.split(' ');
-      if (!tgl || !bln || !th) return null;
-      const bulan = {
-        Januari: 1, Februari: 2, Maret: 3, April: 4, Mei: 5, Juni: 6, 
-        Juli: 7, Agustus: 8, September: 9, Oktober: 10, November: 11, Desember: 12,
-        Jan: 1, Feb: 2, Mar: 3, Apr: 4, Mei: 5, Jun: 6, 
-        Jul: 7, Agu: 8, Sep: 9, Okt: 10, Nov: 11, Des: 12
-      };
-      let m = bulan[bln];
-      if (!m) return null;
-      return `${th}-${pad(m)}-${pad(parseInt(tgl, 10))}`;
-    }
-    
-    function parseJadwalTxt(txt) {
-      const lines = txt.split('\n').map(l => l.trim()).filter(l => !!l && !/Jadwal\s+Tim/i.test(l));
-      let res = [];
-      for (let line of lines) {
-        let parts = line.split(',');
-        if (parts.length < 4) continue;
-        let tanggal = parts[1].trim();
-        let team = parts[2].trim();
-        let membersRaw = parts.slice(3).join(',').trim();
-        let members = membersRaw.split(';').map(m => m.trim()).filter(Boolean);
-        let iso = parseTanggalToISO(parts[0] + ',' + tanggal) || parseTanggalToISO(tanggal);
-        if (!iso) continue;
-        res.push({ date: iso, team, members });
-      }
-      return res.sort((a, b) => a.date.localeCompare(b.date));
-    }
-    
-    function saveJadwal(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
-    
-    function loadJadwal() { 
-      let d = localStorage.getItem(STORAGE_KEY); 
-      try { return d ? JSON.parse(d) : []; } catch { return []; } 
-    }
+<div id="toast" class="fixed left-1/2 bottom-24 px-6 py-4 rounded-xl shadow-xl text-white bg-blue-500 text-base z-50 transition-all flex items-center" style="display:none;transform:translateX(-50%);">
+  <i class="fas fa-check-circle mr-3 text-xl"></i>
+  <span class="toast-msg font-medium"></span>
+</div>
 
-    function getUniqueTeams() {
-      let set = new Set();
-      jadwalArr.forEach(j => set.add(j.team));
-      let teams = Array.from(set);
-      return teams.sort((a, b) => {
-        let numA = (a.match(/Tim (\d+)/i) || [])[1], numB = (b.match(/Tim (\d+)/i) || [])[1];
-        if (numA && numB) return parseInt(numA) - parseInt(numB);
-        if (numA) return -1;
-        if (numB) return 1;
-        return a.localeCompare(b);
-      });
+<script>
+let jadwalArr = [];
+let currentTanggal = null;
+let editIdx = null;
+let currentFilterTeam = "";
+const STORAGE_KEY = "ronda_jadwal_v3";
+const randomKata2 = [
+  "Keamanan Kita Prioritas!",
+  "Utamakan Siskamling, Nyaman Bersama!",
+  "Bersama, Lingkungan Aman Nyaman!",
+  "Jaga Lingkungan, Jaga Keluarga!",
+  "Bersatu Menjaga, Damai Dirasa!",
+  "Ronda untuk Harmoni Bersama!",
+  "Bersatu Menjaga, Damai Dirasa!",
+  "Bersama kita lebih kuat!",
+  "Ronda Malam, Wujud Peduli!",
+  "Ayo Jaga Malam, Demi Kenyamanan!",
+  "Bersatu menjaga, bersama menyelematkan.",
+  "Sinar sentermu cahaya harapan di malam kelam.",
+  "Keberanianmu malam ini adalah ketenangan esok hari.",
+  "Ronda bukan tugas, tapi wujud cinta pada lingkungan.",
+  "Langkahmu tegap, keamanan pun terjaga.",
+  "Di sela senyap malam, keberanianmu berbicara.",
+  "Jagalah lingkar keamanan dengan hati penuh tanggung jawab.",
+  "Setiap putaran ronda adalah wujud kepedulian.",
+  "Kita ronda, agar semua bisa tidur nyenyak.",
+  "Bersama kita kuat, sendiri kita rentan.",
+  "Heningnya malam butuh keberanianmu.",
+  "Satu senter, sejuta rasa aman.",
+  "Ronda pagi—kemenangan kecil bagi hati besar.",
+  "Tangan di senter, mata di lingkungan.",
+  "Langkah berjaga, cermin solidaritas.",
+  "Keamananmu pijar bagi kita semua.",
+  "Jaga malam, jaga persaudaraan.",
+  "Malam gelap, hati terang.",
+  "Satu komando: aman dan damai!",
+  "Ronda: rutinitas yang memberi arti.",
+  "Jadilah lentera kecil di kegelapan.",
+  "Semangat ronda, semangat kebersamaan.",
+  "Kesiagaanmu malam ini adalah senyum esok hari.",
+  "Ronda: aksi nyata, bukan lip service.",
+  "Malam mungkin panjang, tapi solidaritas lebih panjang.",
+  "Keberanianmu, keamanan warga.",
+  "Langkahmu malam ini memberi harapan.",
+  "Ronda: walau sunyi, kita tak sendiri.",
+  "Pasang senter, pancarkan rasa aman.",
+  "Setiap putaran, setiap jiwa terlindungi.",
+  "Ronda hari ini, damai esok hari."
+];
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  const msgEl = t.querySelector('.toast-msg');
+  msgEl.textContent = msg;
+  t.style.display = 'flex';
+  t.style.opacity = '1';
+  
+  setTimeout(() => { 
+    t.style.opacity = '0'; 
+  }, 2500);
+  
+  setTimeout(() => { 
+    t.style.display = 'none'; 
+  }, 2800);
+}
+
+function pad(n){ return n<10?'0'+n:n; }
+function formatTanggalLong(iso){
+  const hari=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const bulan=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  let d=new Date(iso);
+  if(isNaN(d)) return iso;
+  return `${hari[d.getDay()]}, ${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`;
+}
+function parseTanggalToISO(s){
+  s=s.trim().replace(/^[A-Za-z]+,\s*/,'');
+  let [tgl,bln,th]=s.split(' ');
+  if(!tgl||!bln||!th)return null;
+  const bulan={Januari:1,Februari:2,Maret:3,April:4,Mei:5,Juni:6,Juli:7,Agustus:8,September:9,Oktober:10,November:11,Desember:12,
+    Jan:1,Feb:2,Mar:3,Apr:4,Mei:5,Jun:6,Jul:7,Agu:8,Sep:9,Okt:10,Nov:11,Des:12};
+  let m=bulan[bln];
+  if(!m)return null;
+  return `${th}-${pad(m)}-${pad(parseInt(tgl,10))}`;
+}
+function parseJadwalTxt(txt){
+  const lines=txt.split('\n').map(l=>l.trim()).filter(l=>!!l&&!/Jadwal\s+Tim/i.test(l));
+  let res=[];
+  for(let line of lines){
+    let parts=line.split(',');
+    if(parts.length<4)continue;
+    let tanggal=parts[1].trim();
+    let team=parts[2].trim();
+    let membersRaw=parts.slice(3).join(',').trim();
+    let members=membersRaw.split(';').map(m=>m.trim()).filter(Boolean);
+    let iso=parseTanggalToISO(parts[0]+','+tanggal)||parseTanggalToISO(tanggal);
+    if(!iso)continue;
+    res.push({date:iso,team,members});
+  }
+  return res.sort((a,b)=>a.date.localeCompare(b.date));
+}
+function saveJadwal(arr){ localStorage.setItem(STORAGE_KEY,JSON.stringify(arr)); }
+function loadJadwal(){ let d=localStorage.getItem(STORAGE_KEY); try{return d?JSON.parse(d):[];}catch{return [];} }
+
+// --- Sorted Tim filter by "Tim [number]" order
+function getUniqueTeams() {
+  let set = new Set();
+  jadwalArr.forEach(j => set.add(j.team));
+  let teams = Array.from(set);
+  // sort by "Tim [number]" then alpha if not match
+  return teams.sort((a, b) => {
+    let numA = (a.match(/Tim (\d+)/i)||[])[1], numB = (b.match(/Tim (\d+)/i)||[])[1];
+    if(numA && numB) return parseInt(numA) - parseInt(numB);
+    if(numA) return -1;
+    if(numB) return 1;
+    return a.localeCompare(b);
+  });
+}
+function renderFilterTeamOptions() {
+  const select = document.getElementById('filterTeam');
+  const prev = select.value;
+  select.innerHTML = `<option value="">Semua Tim</option>`;
+  getUniqueTeams().forEach(team => {
+    const opt = document.createElement('option');
+    opt.value = team;
+    opt.textContent = team;
+    select.appendChild(opt);
+  });
+  if (getUniqueTeams().includes(prev)) select.value = prev;
+  else select.value = "";
+}
+
+function getFilteredJadwal() {
+  if (!currentFilterTeam) return jadwalArr.slice().sort((a,b)=>a.date.localeCompare(b.date));
+  return jadwalArr.filter(j=>j.team === currentFilterTeam).sort((a,b)=>a.date.localeCompare(b.date));
+}
+function findByTanggal(tanggal) {
+  let filtered = getFilteredJadwal();
+  return filtered.findIndex(j=>j.date===tanggal);
+}
+function renderPreview() {
+  const tbody = document.getElementById('previewTableBody');
+  const notFound = document.getElementById('notFound');
+  tbody.innerHTML = '';
+  notFound.textContent = '';
+  let filtered = getFilteredJadwal();
+  let idx = filtered.findIndex(j=>j.date===currentTanggal);
+  if(idx===-1) {
+    if(filtered.length>0) {
+      currentTanggal = filtered[0].date;
+      idx = 0;
+    } else {
+      notFound.innerHTML = `<div class="py-6 text-slate-500">
+        <i class="fas fa-calendar-times text-4xl mb-3"></i>
+        <p class="text-lg">Tidak ada jadwal ditemukan</p>
+        <p class="text-sm mt-2">Silakan import jadwal atau tambahkan jadwal baru</p>
+      </div>`;
+      toggleMobileActionBar(false);
+      toggleBtnDesktopWA(false);
+      return;
     }
-    
-    function renderFilterTeamOptions() {
-      const select = document.getElementById('filterTeam');
-      const prev = select.value;
-      select.innerHTML = '<option value="">Semua Tim</option>';
-      getUniqueTeams().forEach(team => {
-        const opt = document.createElement('option');
-        opt.value = team;
-        opt.textContent = team;
-        select.appendChild(opt);
-      });
-      if (getUniqueTeams().includes(prev)) select.value = prev;
-      else select.value = "";
+  }
+  let j = filtered[idx];
+  let tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="p-4 font-medium">${formatTanggalLong(j.date)}</td>
+    <td class="p-4 font-semibold text-blue-600 dark:text-blue-400">${j.team}</td>
+    <td class="p-4">${j.members.map(m=>`<span class="member-tag">${m}</span>`).join('')}</td>
+  `;
+  tbody.appendChild(tr);
+  toggleMobileActionBar(true);
+  toggleBtnDesktopWA(true);
+}
+function setTanggalNext(dir) {
+  let filtered = getFilteredJadwal();
+  if(!filtered.length) return;
+  let idx = filtered.findIndex(j=>j.date===currentTanggal);
+  if(idx===-1) {
+    currentTanggal = filtered[0].date;
+  } else {
+    let nextIdx = idx+dir;
+    if(nextIdx >=0 && nextIdx < filtered.length) {
+      currentTanggal = filtered[nextIdx].date;
     }
-    
-    function getFilteredJadwal() {
-      if (!currentFilterTeam) return jadwalArr.slice().sort((a, b) => a.date.localeCompare(b.date));
-      return jadwalArr.filter(j => j.team === currentFilterTeam).sort((a, b) => a.date.localeCompare(b.date));
+  }
+  document.getElementById('datePicker').value = currentTanggal;
+  renderPreview(); 
+  renderWAOutput();
+}
+function randomKalimatPenutup() {
+  let idx = Math.floor(Math.random()*randomKata2.length);
+  return randomKata2[idx];
+}
+function generateWAOutput() {
+  let filtered = getFilteredJadwal();
+  let idx = filtered.findIndex(j=>j.date===currentTanggal);
+  if(idx===-1) return 'Tidak ada jadwal untuk tanggal ini.';
+  const settings = {
+    title: "RONDA MALAM KAISAR RESIDENCE",
+    jam: "23.00–04.00 WIB",
+    tz: "WIB"
+  };
+  let j = filtered[idx];
+  let selanjutnya = filtered.filter(row => row.team === j.team && row.date > j.date)
+    .map(row=>`• ${formatTanggalLong(row.date)}`).join('\n') || '• -';
+  return (
+`🔥🚨 *${settings.title}* 🚨🔥
+
+📆 *${formatTanggalLong(j.date)}*  
+⏰ *Waktu Jaga:* ${settings.jam}  
+
+👥 *${j.team}*  
+👮‍♂️ *Petugas:*  
+${j.members.map(m=>`• ${m}`).join('\n')}
+
+📌 *Jadwal Selanjutnya ${j.team}:*  
+${selanjutnya}
+
+🙏 Terima kasih atas partisipasinya.  
+Mari jaga lingkungan tetap aman dan nyaman bersama-sama.  
+
+💥 *${randomKalimatPenutup()}* 💥
+`
+  );
+}
+function renderWAOutput() {
+  document.getElementById('waOutput').textContent = generateWAOutput();
+}
+function showEditPanel(show, idx) {
+  const panel = document.getElementById('editRowPanel');
+  panel.classList.toggle('hidden', !show);
+  if(show) {
+    let j = jadwalArr[idx];
+    editIdx = idx;
+    document.getElementById('editTanggal').value = j.date;
+    document.getElementById('editTeam').value = j.team;
+    const anggota = j.members.join('\n');
+    const ta = document.getElementById('editAnggota');
+    ta.value = anggota;
+    setTimeout(()=>{
+      ta.style.height = "auto";
+      ta.style.height = (ta.scrollHeight+4) + "px";
+    },1);
+    ta.oninput = function() {
+      this.style.height = "auto";
+      this.style.height = (this.scrollHeight+4) + "px";
+    };
+  } else {
+    editIdx = null;
+  }
+}
+
+// Event listeners
+document.getElementById('filterTeam').addEventListener('change', function() {
+  currentFilterTeam = this.value;
+  let filtered = getFilteredJadwal();
+  if(filtered.length > 0) {
+    currentTanggal = filtered[0].date;
+    document.getElementById('datePicker').value = currentTanggal;
+  }
+  renderPreview();
+  renderWAOutput();
+});
+
+document.getElementById('btnResetFilter').addEventListener('click', function() {
+  currentFilterTeam = "";
+  document.getElementById('filterTeam').value = "";
+  let filtered = getFilteredJadwal();
+  if(filtered.length > 0) {
+    currentTanggal = filtered[0].date;
+    document.getElementById('datePicker').value = currentTanggal;
+  }
+  renderPreview();
+  renderWAOutput();
+});
+
+document.getElementById('datePicker').addEventListener('change', function() {
+  currentTanggal = this.value;
+  renderPreview(); 
+  renderWAOutput();
+});
+
+document.getElementById('btnPrev').addEventListener('click', function() { 
+  setTanggalNext(-1); 
+});
+
+document.getElementById('btnNext').addEventListener('click', function() { 
+  setTanggalNext(1); 
+});
+
+function toggleBtnDesktopWA(show) {
+  const waBtnDesktop = document.getElementById('waBtnDesktop');
+  if (window.innerWidth > 600) {
+    waBtnDesktop.style.display = show ? 'flex' : 'none';
+  } else {
+    waBtnDesktop.style.display = 'none';
+  }
+}
+
+document.getElementById('btnCopyWA').addEventListener('click', function() {
+  let waText = generateWAOutput();
+  navigator.clipboard.writeText(waText).then(()=>showToast('Teks berhasil disalin!'));
+});
+
+document.getElementById('btnEditRow').addEventListener('click', function() {
+  let filtered = getFilteredJadwal();
+  let idxFiltered = filtered.findIndex(j=>j.date===currentTanggal);
+  if(idxFiltered===-1) { 
+    showToast('Tidak ada jadwal untuk diedit!'); 
+    return; 
+  }
+  let obj = filtered[idxFiltered];
+  let idx = jadwalArr.findIndex(j=>j.date === obj.date && j.team === obj.team);
+  if(idx===-1) idx = jadwalArr.findIndex(j=>j.date === obj.date);
+  showEditPanel(true, idx);
+});
+
+function toggleMobileActionBar(show) {
+  const bar = document.getElementById('mobileActionBar');
+  if (window.innerWidth <= 600) {
+    bar.style.display = show ? 'flex' : 'none';
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+document.getElementById('btnCopyWAMobile').addEventListener('click', function() {
+  let waText = generateWAOutput();
+  navigator.clipboard.writeText(waText).then(()=>showToast('Teks berhasil disalin!'));
+});
+
+document.getElementById('btnEditRowMobile').addEventListener('click', function() {
+  let filtered = getFilteredJadwal();
+  let idxFiltered = filtered.findIndex(j=>j.date===currentTanggal);
+  if(idxFiltered===-1) { 
+    showToast('Tidak ada jadwal untuk diedit!'); 
+    return; 
+  }
+  let obj = filtered[idxFiltered];
+  let idx = jadwalArr.findIndex(j=>j.date === obj.date && j.team === obj.team);
+  if(idx===-1) idx = jadwalArr.findIndex(j=>j.date === obj.date);
+  showEditPanel(true, idx);
+});
+
+document.getElementById('btnCancelEdit').addEventListener('click', function() {
+  showEditPanel(false);
+});
+
+document.getElementById('editForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  if(editIdx===null) return;
+  let tgl = document.getElementById('editTanggal').value;
+  let timBaru = document.getElementById('editTeam').value.trim();
+  let anggotaBaru = document.getElementById('editAnggota').value
+    .split('\n').map(m=>m.trim()).filter(Boolean);
+  if(!tgl||!timBaru||!anggotaBaru.length) { 
+    showToast('Lengkapi semua input!'); 
+    return;
+  }
+  
+  let timSebelum = jadwalArr[editIdx].team;
+  let timSebelumLower = timSebelum.trim().toLowerCase();
+  let timBaruLower = timBaru.toLowerCase();
+  
+  // Update semua jadwal untuk tim ini
+  jadwalArr.forEach((item, i) => {
+    if (item.team.trim().toLowerCase() === timSebelumLower) {
+      jadwalArr[i].team = timBaru;
+      jadwalArr[i].members = anggotaBaru.slice();
     }
-    
-    function renderPreview() {
-      const tbody = document.getElementById('previewTableBody');
-      const notFound = document.getElementById('notFound');
-      tbody.innerHTML = '';
-      notFound.innerHTML = '';
-      
-      let filtered = getFilteredJadwal();
-      let idx = filtered.findIndex(j => j.date === currentTanggal);
-      
-      if (idx === -1) {
-        if (filtered.length > 0) {
-          currentTanggal = filtered[0].date;
-          idx = 0;
-        } else {
-          notFound.innerHTML = `
-            <div class="text-center py-8 text-gray-500">
-              <i class="fas fa-calendar-times text-4xl mb-4"></i>
-              <h3 class="text-xl font-semibold">Tidak ada jadwal</h3>
-              <p>Silakan tambahkan jadwal melalui fitur import</p>
-            </div>
-          `;
-          toggleMobileActionBar(false);
-          toggleBtnDesktopWA(false);
-          return;
-        }
-      }
-      
-      let j = filtered[idx];
-      let tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${formatTanggalLong(j.date)}</td>
-        <td><span class="team-name">${j.team}</span></td>
-        <td>
-          <div class="member-list">
-            ${j.members.map(m => `<span class="member-tag">${m}</span>`).join('')}
-          </div>
-        </td>
-      `;
-      tbody.appendChild(tr);
-      toggleMobileActionBar(true);
-      toggleBtnDesktopWA(true);
-    }
-    
-    function setTanggalNext(dir) {
-      let filtered = getFilteredJadwal();
-      if (!filtered.length) return;
-      let idx = filtered.findIndex(j => j.date === currentTanggal);
-      if (idx === -1) {
-        currentTanggal = filtered[0].date;
+  });
+  
+  // Update tanggal untuk entry yang diedit
+  jadwalArr[editIdx].date = tgl;
+  
+  saveJadwal(jadwalArr);
+  renderFilterTeamOptions();
+  
+  if(currentFilterTeam && !getUniqueTeams().includes(currentFilterTeam)) {
+    currentFilterTeam = "";
+    document.getElementById('filterTeam').value = "";
+  }
+  
+  let filtered = getFilteredJadwal();
+  if(filtered.length>0) currentTanggal = filtered[0].date;
+  else currentTanggal = tgl;
+  
+  document.getElementById('datePicker').value = currentTanggal;
+  showEditPanel(false);
+  renderPreview(); 
+  renderWAOutput();
+  showToast('Jadwal tim "'+timBaru+'" diperbarui!');
+});
+
+document.getElementById('btnCopyFormatTxt').addEventListener('click', function() {
+  let lines = jadwalArr.map(j=>`${formatTanggalLong(j.date)}, ${j.team}, ${j.members.join('; ')}`);
+  navigator.clipboard.writeText(lines.join('\n'));
+  showToast('Format TXT disalin!');
+});
+
+function afterDataChange() {
+  renderFilterTeamOptions();
+  let filtered = getFilteredJadwal();
+  if(filtered.length>0) currentTanggal = filtered[0].date;
+  document.getElementById('datePicker').value = currentTanggal;
+  renderPreview(); 
+  renderWAOutput();
+}
+
+document.getElementById('btnImport').addEventListener('click', ()=>document.getElementById('inputFile').click());
+
+document.getElementById('inputFile').addEventListener('change', function(e){
+  const f = e.target.files[0];
+  if(!f) return;
+  
+  const r = new FileReader();
+  r.onload = function(ev) {
+    try {
+      if(f.name.endsWith('.json')){
+        jadwalArr = JSON.parse(ev.target.result) || [];
       } else {
-        let nextIdx = idx + dir;
-        if (nextIdx >= 0 && nextIdx < filtered.length) {
-          currentTanggal = filtered[nextIdx].date;
-        }
+        jadwalArr = parseJadwalTxt(ev.target.result);
       }
-      document.getElementById('datePicker').value = currentTanggal;
-      renderPreview();
-      renderWAOutput();
+      saveJadwal(jadwalArr);
+      afterDataChange();
+      showToast('Data berhasil diimport!');
+    } catch(error) {
+      showToast('Format file tidak valid!');
+      console.error(error);
     }
-    
-    function randomKalimatPenutup() {
-      let idx = Math.floor(Math.random() * randomKata2.length);
-      return randomKata2[idx];
-    }
-    
-    function generateWAOutput() {
-      let filtered = getFilteredJadwal();
-      let idx = filtered.findIndex(j => j.date === currentTanggal);
-      if (idx === -1) return 'Tidak ada jadwal untuk tanggal ini.';
-      
-      const settings = {
-        title: "RONDA MALAM KAISAR RESIDENCE",
-        jam: "23.00–04.00 WIB",
-        tz: "WIB"
-      };
-      
-      let j = filtered[idx];
-      
-      // Get next schedules for the same team after current date
-      let selanjutnya = filtered
-        .filter(row => row.team === j.team && row.date > j.date)
-        .map(row => `• ${formatTanggalLong(row.date)}`)
-        .join('\n') || '• -';
-      
-      return `**${settings.title}**\n\n` +
-        `📆 *${formatTanggalLong(j.date)}*\n` +
-        `⏰ *Waktu Jaga:* ${settings.jam}\n\n` +
-        `👥 *${j.team}*\n` +
-        `👮‍♂️ *Petugas:*\n` +
-        `${j.members.map(m => `• ${m}`).join('\n')}\n\n` +
-        `📌 *Jadwal Selanjutnya ${j.team}:*\n` +
-        `${selanjutnya}\n\n` +
-        `🙏 Terima kasih atas partisipasinya.\n` +
-        `Mari jaga lingkungan tetap aman dan nyaman bersama-sama.\n\n` +
-        `💥 *${randomKalimatPenutup()}* 💥`;
-    }
-    
-    function renderWAOutput() {
-      document.getElementById('waOutput').textContent = generateWAOutput();
-    }
-    
-    function showEditPanel(show, idx) {
-      const panel = document.getElementById('editRowPanel');
-      panel.style.display = show ? 'block' : 'none';
-      
-      if (show) {
-        let j = jadwalArr[idx];
-        editIdx = idx;
-        document.getElementById('editTanggal').value = j.date;
-        document.getElementById('editTeam').value = j.team;
-        document.getElementById('editAnggota').value = j.members.join('\n');
-        
-        // Scroll to edit panel on mobile
-        if (window.innerWidth <= 768) {
-          panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      } else {
-        editIdx = null;
-      }
-    }
-    
-    function toggleMobileActionBar(show) {
-      const bar = document.getElementById('mobileActionBar');
-      bar.style.display = show && window.innerWidth <= 768 ? 'flex' : 'none';
-    }
-    
-    function toggleBtnDesktopWA(show) {
-      const waBtnDesktop = document.getElementById('waBtnDesktop');
-      waBtnDesktop.style.display = show && window.innerWidth > 768 ? 'flex' : 'none';
-    }
-    
-    function afterDataChange() {
-      renderFilterTeamOptions();
-      let filtered = getFilteredJadwal();
-      if (filtered.length > 0) currentTanggal = filtered[0].date;
-      document.getElementById('datePicker').value = currentTanggal;
-      renderPreview();
-      renderWAOutput();
-    }
-    
-    // Initialize the application
-    function initApp() {
-      // Load data from localStorage
-      jadwalArr = loadJadwal();
-      
-      // Initialize UI
-      renderFilterTeamOptions();
-      
-      // Set default date
-      let today = new Date().toISOString().slice(0, 10);
-      let filtered = getFilteredJadwal();
-      
-      if (filtered.length) {
-        // Try to find today's date or use first available
-        let todayIndex = filtered.findIndex(j => j.date === today);
-        currentTanggal = todayIndex !== -1 ? today : filtered[0].date;
-      } else {
-        currentTanggal = today;
-      }
-      
-      document.getElementById('datePicker').value = currentTanggal;
-      renderPreview();
-      renderWAOutput();
-    }
-    
-    // Event listeners
-    document.addEventListener('DOMContentLoaded', function() {
-      initApp();
-      
-      // Theme toggle
-      document.getElementById('themeToggle').addEventListener('click', function() {
-        document.body.classList.toggle('dark');
-      });
-      
-      // Filter Team change
-      document.getElementById('filterTeam').addEventListener('change', function() {
-        currentFilterTeam = this.value;
-        let filtered = getFilteredJadwal();
-        if (filtered.length > 0) {
-          currentTanggal = filtered[0].date;
-          document.getElementById('datePicker').value = currentTanggal;
-        }
-        renderPreview();
-        renderWAOutput();
-      });
-      
-      // Date picker change
-      document.getElementById('datePicker').addEventListener('change', function() {
-        currentTanggal = this.value;
-        renderPreview();
-        renderWAOutput();
-      });
-      
-      // Navigation buttons
-      document.getElementById('btnPrev').addEventListener('click', function() { 
-        setTanggalNext(-1); 
-      });
-      
-      document.getElementById('btnNext').addEventListener('click', function() { 
-        setTanggalNext(1); 
-      });
-      
-      // Copy WA text
-      document.getElementById('btnCopyWA').addEventListener('click', function() {
-        let waText = generateWAOutput();
-        navigator.clipboard.writeText(waText).then(() => {
-          showToast('Teks berhasil disalin!');
-        });
-      });
-      
-      document.getElementById('btnCopyWAMobile').addEventListener('click', function() {
-        let waText = generateWAOutput();
-        navigator.clipboard.writeText(waText).then(() => {
-          showToast('Teks berhasil disalin!');
-        });
-      });
-      
-      // Edit row
-      document.getElementById('btnEditRow').addEventListener('click', function() {
-        let filtered = getFilteredJadwal();
-        let idxFiltered = filtered.findIndex(j => j.date === currentTanggal);
-        if (idxFiltered === -1) { 
-          showToast('Tidak ada jadwal untuk diedit!'); 
-          return; 
-        }
-        let obj = filtered[idxFiltered];
-        let idx = jadwalArr.findIndex(j => j.date === obj.date && j.team === obj.team);
-        if (idx === -1) idx = jadwalArr.findIndex(j => j.date === obj.date);
-        showEditPanel(true, idx);
-      });
-      
-      document.getElementById('btnEditRowMobile').addEventListener('click', function() {
-        let filtered = getFilteredJadwal();
-        let idxFiltered = filtered.findIndex(j => j.date === currentTanggal);
-        if (idxFiltered === -1) { 
-          showToast('Tidak ada jadwal untuk diedit!'); 
-          return; 
-        }
-        let obj = filtered[idxFiltered];
-        let idx = jadwalArr.findIndex(j => j.date === obj.date && j.team === obj.team);
-        if (idx === -1) idx = jadwalArr.findIndex(j => j.date === obj.date);
-        showEditPanel(true, idx);
-      });
-      
-      // Cancel edit
-      document.getElementById('btnCancelEdit').addEventListener('click', function() {
-        showEditPanel(false);
-      });
-      
-      // Save edit
-      document.getElementById('editForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        if (editIdx === null) return;
-        
-        let tgl = document.getElementById('editTanggal').value;
-        let timBaru = document.getElementById('editTeam').value.trim();
-        let anggotaBaru = document.getElementById('editAnggota').value
-          .split('\n').map(m => m.trim()).filter(Boolean);
-        
-        if (!tgl || !timBaru || !anggotaBaru.length) { 
-          showToast('Lengkapi semua input!'); 
-          return;
-        }
-        
-        let timSebelum = jadwalArr[editIdx].team;
-        let timSebelumLower = timSebelum.trim().toLowerCase();
-        let timBaruLower = timBaru.toLowerCase();
-        
-        // Update all schedules for this team
-        jadwalArr.forEach((item, i) => {
-          if (item.team.trim().toLowerCase() === timSebelumLower) {
-            jadwalArr[i].team = timBaru;
-            jadwalArr[i].members = anggotaBaru.slice();
-          }
-        });
-        
-        // Update date for the edited entry
-        jadwalArr[editIdx].date = tgl;
-        
-        saveJadwal(jadwalArr);
-        renderFilterTeamOptions();
-        
-        if (currentFilterTeam && !getUniqueTeams().includes(currentFilterTeam)) {
-          currentFilterTeam = "";
-          document.getElementById('filterTeam').value = "";
-        }
-        
-        let filtered = getFilteredJadwal();
-        if (filtered.length > 0) currentTanggal = filtered[0].date;
-        else currentTanggal = tgl;
-        
-        document.getElementById('datePicker').value = currentTanggal;
-        showEditPanel(false);
-        renderPreview();
-        renderWAOutput();
-        showToast('Jadwal tim "' + timBaru + '" diperbarui!');
-      });
-      
-      // Import data
-      document.getElementById('btnImport').addEventListener('click', () => {
-        document.getElementById('inputFile').click();
-      });
-      
-      document.getElementById('inputFile').addEventListener('change', function(e) {
-        const f = e.target.files[0];
-        if (!f) return;
-        
-        const r = new FileReader();
-        r.onload = function(ev) {
-          try {
-            if (f.name.endsWith('.json')) {
-              jadwalArr = JSON.parse(ev.target.result) || [];
-            } else {
-              jadwalArr = parseJadwalTxt(ev.target.result);
-            }
-            saveJadwal(jadwalArr);
-            afterDataChange();
-            showToast('Data berhasil diimport!');
-          } catch (error) {
-            showToast('Format file tidak valid!');
-          }
-        };
-        r.readAsText(f);
-        e.target.value = '';
-      });
-      
-      // Export data
-      document.getElementById('btnExportTxt').addEventListener('click', function() {
-        let lines = jadwalArr.map(j => `${formatTanggalLong(j.date)}, ${j.team}, ${j.members.join('; ')}`);
-        let blob = new Blob([lines.join('\n')], { type: 'text/plain' });
-        let a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = "jadwal_ronda.txt";
-        a.click();
-        URL.revokeObjectURL(a.href);
-        showToast('Export TXT berhasil!');
-      });
-      
-      document.getElementById('btnExportJson').addEventListener('click', function() {
-        let blob = new Blob([JSON.stringify(jadwalArr, null, 2)], { type: 'application/json' });
-        let a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = "jadwal_ronda.json";
-        a.click();
-        URL.revokeObjectURL(a.href);
-        showToast('Export JSON berhasil!');
-      });
-      
-      // Clear data
-      document.getElementById('btnClear').addEventListener('click', function() {
-        if (confirm('Apakah Anda yakin ingin menghapus semua jadwal?')) {
-          jadwalArr = [];
-          saveJadwal(jadwalArr);
-          afterDataChange();
-          showToast('Semua jadwal telah dihapus!');
-        }
-      });
-      
-      // Copy format TXT
-      document.getElementById('btnCopyFormatTxt').addEventListener('click', function() {
-        let lines = jadwalArr.map(j => `${formatTanggalLong(j.date)}, ${j.team}, ${j.members.join('; ')}`);
-        navigator.clipboard.writeText(lines.join('\n'));
-        showToast('Format TXT disalin!');
-      });
-    });
-  </script>
+  };
+  r.readAsText(f);
+  e.target.value = ''; // Reset input file
+});
+
+document.getElementById('btnExportTxt').addEventListener('click', function(){
+  let lines = jadwalArr.map(j=>`${formatTanggalLong(j.date)}, ${j.team}, ${j.members.join('; ')}`);
+  let blob = new Blob([lines.join('\n')], {type:'text/plain'});
+  let a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = "jadwal_ronda.txt";
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('Export TXT berhasil!');
+});
+
+document.getElementById('btnExportJson').addEventListener('click', function(){
+  let blob = new Blob([JSON.stringify(jadwalArr,null,2)], {type:'application/json'});
+  let a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = "jadwal_ronda.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('Export JSON berhasil!');
+});
+
+document.getElementById('btnClear').addEventListener('click', function(){
+  if(confirm('Apakah Anda yakin ingin menghapus semua jadwal?')){
+    jadwalArr = [];
+    saveJadwal(jadwalArr);
+    afterDataChange();
+    showToast('Semua jadwal telah dihapus!');
+  }
+});
+
+// Overlay tutorial
+document.getElementById('btnShowTutorial').addEventListener('click', function() {
+  document.getElementById('tutorialOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+});
+
+document.getElementById('btnCloseTutorial').addEventListener('click', function() {
+  document.getElementById('tutorialOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+});
+
+document.getElementById('tutorialOverlay').addEventListener('click', function(e){
+  if(e.target === this){
+    this.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+});
+
+// Initialize
+window.addEventListener('DOMContentLoaded', function() {
+  // Set dark mode based on preference
+  if(window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.body.classList.add('dark');
+  }
+  
+  // Load data from localStorage
+  jadwalArr = loadJadwal();
+  
+  // Initialize UI
+  renderFilterTeamOptions();
+  
+  // Set default date
+  let today = new Date().toISOString().slice(0,10);
+  let filtered = getFilteredJadwal();
+  
+  if(filtered.length) {
+    // Try to find today's date or use first available
+    let todayIndex = filtered.findIndex(j => j.date === today);
+    currentTanggal = todayIndex !== -1 ? today : filtered[0].date;
+  } else {
+    currentTanggal = today;
+  }
+  
+  document.getElementById('datePicker').value = currentTanggal;
+  renderPreview(); 
+  renderWAOutput();
+  
+  // Set initial tutorial state
+  if(!localStorage.getItem('tutorialShown')) {
+    setTimeout(() => {
+      document.getElementById('tutorialOverlay').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      localStorage.setItem('tutorialShown', 'true');
+    }, 1500);
+  }
+  
+  // Handle window resize for button visibility
+  window.addEventListener('resize', function() {
+    toggleBtnDesktopWA(jadwalArr.length > 0);
+    toggleMobileActionBar(jadwalArr.length > 0);
+  });
+});
+</script>
 </body>
 </html>
