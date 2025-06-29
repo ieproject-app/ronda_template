@@ -1,50 +1,49 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Siskamling Maestro</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <meta name="color-scheme" content="dark light">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-    
     :root {
-      --primary: #2563eb;
-      --secondary: #1e40af;
-      --accent: #22c55e;
-      --card: #f0f9ff;
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --secondary: #64748b;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --card: #f8fafc;
       --text: #1e293b;
-      --border: #cbd5e1;
+      --border: #e2e8f0;
     }
     
-    body.dark {
-      --primary: #3b82f6;
-      --secondary: #1e40af;
-      --accent: #22c55e;
+    .dark {
+      --primary: #60a5fa;
+      --primary-dark: #3b82f6;
+      --secondary: #94a3b8;
       --card: #1e293b;
       --text: #f1f5f9;
-      --border: #475569;
+      --border: #334155;
     }
     
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
     
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #f0f9ff, #e6f7ff);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background-color: #f1f5f9;
       color: var(--text);
-      transition: background 0.3s, color 0.3s;
-      min-height: 100vh;
+      line-height: 1.6;
       padding: 20px;
+      transition: background-color 0.3s, color 0.3s;
     }
     
     body.dark {
-      background: linear-gradient(135deg, #0f172a, #1e293b);
+      background-color: #0f172a;
     }
     
     .container {
@@ -52,47 +51,46 @@
       margin: 0 auto;
     }
     
-    /* Header Styles */
-    .app-header {
+    /* Header */
+    .header {
       text-align: center;
       margin-bottom: 30px;
       padding: 20px;
     }
     
-    .app-header h1 {
-      font-size: 2.5rem;
+    .header h1 {
+      font-size: 2.2rem;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
       font-weight: 700;
-      color: var(--secondary);
-      margin-bottom: 10px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
-    .app-header p {
+    .header p {
       font-size: 1.1rem;
-      color: var(--text);
-      opacity: 0.8;
+      color: var(--secondary);
+      max-width: 600px;
+      margin: 0 auto;
     }
     
     .divider {
-      height: 3px;
-      background: linear-gradient(to right, transparent, var(--primary), transparent);
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
       margin: 25px 0;
-      border-radius: 10px;
+      border-radius: 2px;
     }
     
-    /* Card Styles */
+    /* Card */
     .card {
       background: var(--card);
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-      padding: 25px;
-      margin-bottom: 25px;
-      transition: all 0.3s ease;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 24px;
+      margin-bottom: 24px;
       border: 1px solid var(--border);
     }
     
     .card-title {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       font-weight: 600;
       color: var(--primary);
       margin-bottom: 20px;
@@ -102,271 +100,249 @@
     }
     
     .card-title i {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
     }
     
-    /* Button Styles */
-    .btn-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      justify-content: center;
-      margin-bottom: 10px;
-    }
-    
+    /* Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 12px 20px;
-      border-radius: 12px;
+      padding: 10px 18px;
+      border-radius: 8px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s ease;
       border: none;
       min-width: 140px;
       text-align: center;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    
-    .btn-primary {
       background: var(--primary);
       color: white;
+      font-size: 1rem;
     }
     
-    .btn-primary:hover {
-      background: var(--secondary);
+    .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      background: var(--primary-dark);
     }
     
     .btn-success {
       background: #22c55e;
-      color: white;
+    }
+    
+    .btn-success:hover {
+      background: #16a34a;
     }
     
     .btn-info {
       background: #0ea5e9;
-      color: white;
+    }
+    
+    .btn-info:hover {
+      background: #0284c7;
     }
     
     .btn-danger {
       background: #ef4444;
-      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #dc2626;
     }
     
     .btn-secondary {
       background: #94a3b8;
-      color: white;
     }
     
-    /* Filter Section */
-    .filter-section {
+    .btn-secondary:hover {
+      background: #64748b;
+    }
+    
+    .btn-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px;
-      align-items: center;
-      margin-bottom: 25px;
-    }
-    
-    .filter-item {
-      flex: 1;
-      min-width: 200px;
-    }
-    
-    .filter-item label {
-      display: block;
+      gap: 12px;
+      justify-content: center;
       margin-bottom: 8px;
+    }
+    
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 18px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
       font-weight: 500;
       color: var(--text);
     }
     
-    .filter-item select,
-    .filter-item input {
+    .form-control {
       width: 100%;
-      padding: 12px 15px;
-      border-radius: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
       border: 1px solid var(--border);
       background: var(--card);
       color: var(--text);
       font-size: 1rem;
     }
     
-    .date-navigation {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin: 20px 0;
-    }
-    
-    /* Schedule Table */
+    /* Table */
     .schedule-table {
       width: 100%;
       border-collapse: collapse;
       margin: 20px 0;
-      border-radius: 12px;
+      border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
     
     .schedule-table th {
       background: var(--primary);
       color: white;
-      padding: 15px;
+      padding: 12px 16px;
       text-align: left;
       font-weight: 600;
     }
     
     .schedule-table td {
-      padding: 15px;
+      padding: 12px 16px;
       border-bottom: 1px solid var(--border);
-      background: var(--card);
-    }
-    
-    .schedule-table tr:last-child td {
-      border-bottom: none;
     }
     
     .team-name {
       font-weight: 600;
-      color: var(--secondary);
+      color: var(--primary-dark);
     }
     
     .member-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 8px;
+      gap: 6px;
+      margin-top: 6px;
     }
     
     .member-tag {
-      background: rgba(34, 197, 94, 0.15);
-      color: #15803d;
-      padding: 5px 12px;
+      background: #dbeafe;
+      color: var(--primary-dark);
+      padding: 4px 10px;
       border-radius: 20px;
       font-size: 0.9rem;
     }
     
-    body.dark .member-tag {
-      background: rgba(34, 197, 94, 0.2);
-      color: #86efac;
+    .dark .member-tag {
+      background: #1e3a8a;
+      color: #dbeafe;
     }
     
     /* WhatsApp Preview */
     .wa-preview {
-      background: #f7fdf9;
-      color: #2d4736;
-      border: 1px solid #25D366;
-      border-radius: 16px;
-      padding: 25px;
+      background: #f0fdf4;
+      color: #166534;
+      border: 1px solid #22c55e;
+      border-radius: 12px;
+      padding: 20px;
       margin-top: 20px;
       line-height: 1.7;
       white-space: pre-wrap;
       font-size: 1.05rem;
     }
     
-    body.dark .wa-preview {
-      background: #17291e;
-      color: #e9ffe2;
-      border-color: #25D366;
-    }
-    
-    .wa-preview b {
-      color: var(--primary);
+    .dark .wa-preview {
+      background: #052e16;
+      color: #bbf7d0;
+      border-color: #22c55e;
     }
     
     .wa-actions {
       display: flex;
-      justify-content: flex-end;
-      gap: 15px;
+      justify-content: center;
+      gap: 12px;
       margin-top: 20px;
-    }
-    
-    .wa-btn {
-      min-width: 140px;
     }
     
     /* Mobile Action Bar */
     .mobile-action-bar {
       position: fixed;
-      left: 0; right: 0; bottom: 0;
-      z-index: 1100;
+      left: 0; 
+      right: 0; 
+      bottom: 0;
+      z-index: 100;
       background: var(--card);
       border-top: 1px solid var(--border);
-      box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
       display: flex;
-      gap: 15px;
-      padding: 15px;
+      gap: 12px;
+      padding: 14px 20px;
       justify-content: center;
       align-items: center;
       display: none;
     }
     
-    /* Edit Panel */
-    .edit-panel {
-      margin-top: 30px;
-      padding: 25px;
-      border-radius: 16px;
-      background: var(--card);
-      border: 1px solid var(--border);
-    }
-    
-    .edit-form {
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 20px;
+      border-radius: 8px;
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       display: flex;
-      flex-direction: column;
-      gap: 20px;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s;
     }
     
-    .form-group {
+    .toast.show {
+      opacity: 1;
+    }
+    
+    /* Theme Toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 50px;
+      height: 26px;
+      background: var(--secondary);
+      border-radius: 13px;
       display: flex;
-      flex-direction: column;
-      gap: 8px;
+      align-items: center;
+      padding: 2px;
+      cursor: pointer;
+      z-index: 100;
     }
     
-    .form-group label {
-      font-weight: 500;
+    .theme-toggle .toggle-handle {
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s;
     }
     
-    .form-group input,
-    .form-group textarea {
-      padding: 12px 15px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      font-family: inherit;
-    }
-    
-    .form-group textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-    
-    .form-actions {
-      display: flex;
-      gap: 15px;
-      margin-top: 10px;
+    .dark .theme-toggle .toggle-handle {
+      transform: translateX(24px);
     }
     
     /* Responsive */
     @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .header p {
+        font-size: 1rem;
+      }
+      
       .btn {
         min-width: 100%;
-      }
-      
-      .filter-section {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      
-      .schedule-table {
-        font-size: 0.9rem;
-      }
-      
-      .schedule-table th, 
-      .schedule-table td {
-        padding: 12px;
       }
       
       .wa-actions {
@@ -377,45 +353,29 @@
         display: flex;
       }
     }
-    
-    @media (max-width: 480px) {
-      .app-header h1 {
-        font-size: 2rem;
-      }
-      
-      .card {
-        padding: 20px;
-      }
-    }
-    
-    /* Animation */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .fade-in {
-      animation: fadeIn 0.5s ease-out;
-    }
   </style>
 </head>
 <body>
+  <div class="theme-toggle" id="themeToggle">
+    <div class="toggle-handle"></div>
+  </div>
+  
   <div class="container">
-    <header class="app-header fade-in">
+    <header class="header">
       <h1>Siskamling Maestro</h1>
       <p>Kelola jadwal ronda dengan mudah dan efisien</p>
     </header>
     
     <div class="divider"></div>
     
-    <div class="card fade-in">
+    <div class="card">
       <div class="card-title">
         <i class="fas fa-file-import"></i>
         <span>Manajemen Data</span>
       </div>
       
       <div class="btn-group">
-        <button id="btnImport" class="btn btn-primary">
+        <button id="btnImport" class="btn">
           <i class="fas fa-file-import"></i>
           Import Data
         </button>
@@ -440,40 +400,38 @@
       <input type="file" id="inputFile" accept=".txt,.json" class="hidden" />
     </div>
     
-    <div class="card fade-in">
+    <div class="card">
       <div class="card-title">
         <i class="fas fa-filter"></i>
         <span>Filter Jadwal</span>
       </div>
       
-      <div class="filter-section">
-        <div class="filter-item">
-          <label for="filterTeam">Filter Tim</label>
-          <select id="filterTeam">
-            <option value="">Semua Tim</option>
-            <!-- Options will be populated by JS -->
-          </select>
-        </div>
-        
-        <div class="filter-item">
-          <label for="datePicker">Pilih Tanggal</label>
-          <input type="date" id="datePicker" />
-        </div>
+      <div class="form-group">
+        <label for="filterTeam">Filter Tim</label>
+        <select id="filterTeam" class="form-control">
+          <option value="">Semua Tim</option>
+          <!-- Options will be populated by JS -->
+        </select>
       </div>
       
-      <div class="date-navigation">
-        <button id="btnPrev" class="btn btn-primary">
+      <div class="form-group">
+        <label for="datePicker">Pilih Tanggal</label>
+        <input type="date" id="datePicker" class="form-control" />
+      </div>
+      
+      <div class="btn-group">
+        <button id="btnPrev" class="btn">
           <i class="fas fa-chevron-left"></i>
           Sebelumnya
         </button>
-        <button id="btnNext" class="btn btn-primary">
+        <button id="btnNext" class="btn">
           Selanjutnya
           <i class="fas fa-chevron-right"></i>
         </button>
       </div>
     </div>
     
-    <div class="card fade-in">
+    <div class="card">
       <div class="card-title">
         <i class="fas fa-calendar-alt"></i>
         <span>Jadwal Ronda</span>
@@ -496,55 +454,53 @@
       </div>
     </div>
     
-    <div class="card fade-in" id="editRowPanel" style="display: none;">
+    <div class="card" id="editRowPanel" style="display: none;">
       <div class="card-title">
         <i class="fas fa-edit"></i>
         <span>Edit Jadwal</span>
       </div>
       
-      <div class="edit-panel">
-        <form id="editForm" class="edit-form">
-          <div class="form-group">
-            <label for="editTanggal">Tanggal</label>
-            <input type="date" id="editTanggal" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="editTeam">Tim</label>
-            <input type="text" id="editTeam" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="editAnggota">Anggota (satu per baris)</label>
-            <textarea id="editAnggota" required></textarea>
-          </div>
-          
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
-              <i class="fas fa-save"></i>
-              Simpan
-            </button>
-            <button type="button" id="btnCancelEdit" class="btn btn-secondary">
-              <i class="fas fa-times"></i>
-              Batal
-            </button>
-          </div>
-        </form>
-      </div>
+      <form id="editForm">
+        <div class="form-group">
+          <label for="editTanggal">Tanggal</label>
+          <input type="date" id="editTanggal" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="editTeam">Tim</label>
+          <input type="text" id="editTeam" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="editAnggota">Anggota (satu per baris)</label>
+          <textarea id="editAnggota" class="form-control" rows="4" required></textarea>
+        </div>
+        
+        <div class="btn-group">
+          <button type="submit" class="btn">
+            <i class="fas fa-save"></i>
+            Simpan
+          </button>
+          <button type="button" id="btnCancelEdit" class="btn btn-secondary">
+            <i class="fas fa-times"></i>
+            Batal
+          </button>
+        </div>
+      </form>
     </div>
     
-    <div class="card fade-in">
+    <div class="card">
       <div class="card-title">
         <i class="fab fa-whatsapp"></i>
         <span>Preview Pengumuman WhatsApp</span>
       </div>
       
       <div class="wa-actions" id="waBtnDesktop">
-        <button id="btnCopyWA" class="btn btn-success wa-btn">
+        <button id="btnCopyWA" class="btn btn-success">
           <i class="fas fa-copy"></i>
           Copy Teks
         </button>
-        <button id="btnEditRow" class="btn btn-primary wa-btn">
+        <button id="btnEditRow" class="btn">
           <i class="fas fa-edit"></i>
           Edit
         </button>
@@ -560,19 +516,25 @@
         <i class="fas fa-copy"></i>
         Copy Teks
       </button>
-      <button id="btnEditRowMobile" class="btn btn-primary">
+      <button id="btnEditRowMobile" class="btn">
         <i class="fas fa-edit"></i>
         Edit
       </button>
     </div>
   </div>
 
+  <div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastMessage"></span>
+  </div>
+
   <script>
+    // Data and State Management
     let jadwalArr = [];
     let currentTanggal = null;
     let editIdx = null;
     let currentFilterTeam = "";
-    const STORAGE_KEY = "ronda_jadwal_v4";
+    const STORAGE_KEY = "ronda_jadwal_v5";
     const randomKata2 = [
       "Keamanan Kita Prioritas!",
       "Utamakan Siskamling, Nyaman Bersama!",
@@ -617,24 +579,17 @@
       "Ronda hari ini, damai esok hari."
     ];
 
-    function showToast(msg, type = 'success') {
-      // Create toast element
-      const toast = document.createElement('div');
-      toast.className = `fixed top-5 right-5 px-5 py-3 rounded-lg shadow-lg text-white z-50 transition-all flex items-center ${
-        type === 'success' ? 'bg-green-500' : 'bg-red-500'
-      }`;
-      toast.innerHTML = `
-        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} mr-2"></i>
-        <span>${msg}</span>
-      `;
-      document.body.appendChild(toast);
+    // Utility Functions
+    function showToast(message, duration = 3000) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toastMessage');
+      
+      toastMessage.textContent = message;
+      toast.classList.add('show');
       
       setTimeout(() => {
-        toast.style.opacity = '0';
-        setTimeout(() => {
-          document.body.removeChild(toast);
-        }, 300);
-      }, 3000);
+        toast.classList.remove('show');
+      }, duration);
     }
 
     function pad(n) { return n < 10 ? '0' + n : n; }
@@ -733,10 +688,10 @@
           idx = 0;
         } else {
           notFound.innerHTML = `
-            <div class="text-center py-8">
-              <i class="fas fa-calendar-times text-4xl text-gray-400 mb-4"></i>
+            <div class="text-center py-8 text-gray-500">
+              <i class="fas fa-calendar-times text-4xl mb-4"></i>
               <h3 class="text-xl font-semibold">Tidak ada jadwal</h3>
-              <p class="text-gray-600 mt-2">Silakan tambahkan jadwal melalui fitur import</p>
+              <p>Silakan tambahkan jadwal melalui fitur import</p>
             </div>
           `;
           toggleMobileActionBar(false);
@@ -860,11 +815,6 @@
     
     // Initialize the application
     function initApp() {
-      // Set dark mode based on preference
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.add('dark');
-      }
-      
       // Load data from localStorage
       jadwalArr = loadJadwal();
       
@@ -891,6 +841,11 @@
     // Event listeners
     document.addEventListener('DOMContentLoaded', function() {
       initApp();
+      
+      // Theme toggle
+      document.getElementById('themeToggle').addEventListener('click', function() {
+        document.body.classList.toggle('dark');
+      });
       
       // Filter Team change
       document.getElementById('filterTeam').addEventListener('change', function() {
@@ -940,7 +895,7 @@
         let filtered = getFilteredJadwal();
         let idxFiltered = filtered.findIndex(j => j.date === currentTanggal);
         if (idxFiltered === -1) { 
-          showToast('Tidak ada jadwal untuk diedit!', 'error'); 
+          showToast('Tidak ada jadwal untuk diedit!'); 
           return; 
         }
         let obj = filtered[idxFiltered];
@@ -953,7 +908,7 @@
         let filtered = getFilteredJadwal();
         let idxFiltered = filtered.findIndex(j => j.date === currentTanggal);
         if (idxFiltered === -1) { 
-          showToast('Tidak ada jadwal untuk diedit!', 'error'); 
+          showToast('Tidak ada jadwal untuk diedit!'); 
           return; 
         }
         let obj = filtered[idxFiltered];
@@ -978,7 +933,7 @@
           .split('\n').map(m => m.trim()).filter(Boolean);
         
         if (!tgl || !timBaru || !anggotaBaru.length) { 
-          showToast('Lengkapi semua input!', 'error'); 
+          showToast('Lengkapi semua input!'); 
           return;
         }
         
@@ -1037,7 +992,7 @@
             afterDataChange();
             showToast('Data berhasil diimport!');
           } catch (error) {
-            showToast('Format file tidak valid!', 'error');
+            showToast('Format file tidak valid!');
           }
         };
         r.readAsText(f);
